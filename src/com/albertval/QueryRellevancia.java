@@ -11,7 +11,7 @@ import java.util.Vector;
 public class QueryRellevancia extends Query{
     private Double resultat;
 
-    public QueryRellevancia(String path, List<String> vs) {
+    public QueryRellevancia(String path, Vector<String> vs) {
         this.path = path;
         this.vs = vs;
     }

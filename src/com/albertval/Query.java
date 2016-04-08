@@ -8,8 +8,10 @@ import java.util.Vector;
  */
 public abstract class Query {
     protected String path;
-    protected List<String> vs;
+    protected Vector<String> vs;
     public Query() {
 
     }
+
+
 }
