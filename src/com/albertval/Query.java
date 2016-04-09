@@ -8,10 +8,12 @@ import java.util.Vector;
  */
 public abstract class Query {
     protected String path;
-    protected Vector<String> vs;
+    protected Vector<String> vs; //fa falta que estigui a query?
     public Query() {
 
     }
 
 
+    public Query(String path, Vector<String> vs) {
+    }
 }

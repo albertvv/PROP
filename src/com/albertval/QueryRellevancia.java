@@ -11,10 +11,14 @@ import java.util.Vector;
 public class QueryRellevancia extends Query{
     private Double resultat;
 
-    public QueryRellevancia(String path, Vector<String> vs) {
-        this.path = path;
-        this.vs = vs;
+    QueryRellevancia(String path, Vector<String> vs) {
+        super(path, vs);
     }
+
+//    public QueryRellevancia(String path, Vector<String> vs) {
+//        this.path = path;
+//        this.vs = vs;
+//    }
 
     public Double getResultat() {
         return resultat;
