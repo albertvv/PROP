@@ -12,8 +12,8 @@ public abstract class Query {
     public Query() {
 
     }
-
-
     public Query(String path, Vector<String> vs) {
+        this.path = path;
+        this.vs = vs;
     }
 }
