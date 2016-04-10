@@ -3,7 +3,7 @@
 public class Grafo {
 	
 	//ATRIBUTS
-	private SparseVector<Autor>			vectorAutor;
+	private SparseVector<Autor>		vectorAutor;
 	private SparseVector<Conferencia>	vectorConferencia;
 	private SparseVector<Termino>		vectorTermino;
 	private SparseVector<Articulo>		vectorArticulo;
@@ -12,56 +12,61 @@ public class Grafo {
 	private SparseMatrix<boolean>	matrizPaperConferencia;
 	private SparseMatrix<boolean>	matrizPaperTermino;
 
-	private HashMap<String,Integer> diccionariEntitats; //per trobar la id a partir del nom d'una Entitat
+	private HashMap<String,Integer> diccionariEntitats; //[NOU] per trobar la id a partir del nom d'una Entitat
 
 	private Integer lastId;
 
 
 	//CONSTRUCTORA
 	public Grafo() {
-		vectorAutor 			= new SparseVector<Autor>();
-		vectorConferencia		= new SparseVector<Conferencia>();
-		vectorTermino 			= new SparseVector<Termino>();
-		vectorArticulo 			= new SparseVector<Articulo>();
+		vectorAutor 		= new SparseVector<Autor>();
+		vectorConferencia	= new SparseVector<Conferencia>();
+		vectorTermino 		= new SparseVector<Termino>();
+		vectorArticulo 		= new SparseVector<Articulo>();
 
-		matrizPaperAutor 		= new SparseMatrix<boolean>();
+		matrizPaperAutor 	= new SparseMatrix<boolean>();
 		matrizPaperConferencia 	= new SparseMatrix<boolean>();
-		matrizPaperTermino 		= new SparseMatrix<boolean>();
+		matrizPaperTermino 	= new SparseMatrix<boolean>();
 
-		diccionariEntitats		= new HashMap<String,Integer>();
+		diccionariEntitats	= new HashMap<String,Integer>();
 
 		lastId = -1;
 	}
 
 
-	//METODES			 /*___________*/
+	//METODES	     /*___________*/
 	public void addEntidad(Integer id, String nombre, String tipoEntidad) {
-		switch (tipoEntidad) {
-			case "Articulo":
-				Articulo tmpArticulo = new Articulo(id, nombre);
-				vectorArticulo.set(id, tmpArticulo);
-				//matrizPaperAutor[0..nPapers][id] = 0
-				//matrizPaperConferencia[0..nPapers][id] = 0
-				//matrizPaperTermino[0..nPapers][id] = 0
-				break;
-			case "Autor":
-				Autor tmpAutor = new Autor(id, nombre);
-				vectorAutor.set(id, tmpAutor);
-				//matrizPaperAutor[0..nPapers][id] = 0
-				break;
-			case "Conferencia":
-				Conferencia tmpConferencia = new Conferencia(id, nombre);
-				vectorConferencia.set(id, tmpConferencia);
-				//matrizPaperConferencia[0..nPapers][id] = 0
-				break;
-			case "Termino":
-				Termino tmpTermino = new Termino(id, nombre);
-				vectorTermino.set(id, tmpTermino);
-				//matrizPaperTermino[0..nPapers][id] = 0
-				break;
-			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
-				break;
+		if (!diccionariEntitats.containskey(nombre))
+			System.out.println("El nom ha de ser valid");
+		else {
+			switch (tipoEntidad) {
+				Integer index = diccionariEntitats.get(nombre);
+				case "Articulo":
+					Articulo tmpArticulo = new Articulo(index, nombre);
+					vectorArticulo.set(index, tmpArticulo);
+					//matrizPaperAutor[index][0..nAutors] = 0
+					//matrizPaperConferencia[index][0..nConferencies] = 0
+					//matrizPaperTermino[index][0..nTerminos] = 0
+					break;
+				case "Autor":
+					Autor tmpAutor = new Autor(index, nombre);
+					vectorAutor.set(index, tmpAutor);
+					//matrizPaperAutor[0..nPapers][index] = 0
+					break;
+				case "Conferencia":
+					Conferencia tmpConferencia = new Conferencia(index, nombre);
+					vectorConferencia.set(index, tmpConferencia);
+					//matrizPaperConferencia[0..nPapers][index] = 0
+					break;
+				case "Termino":
+					Termino tmpTermino = new Termino(index, nombre);
+					vectorTermino.set(index, tmpTermino);
+					//matrizPaperTermino[0..nPapers][index] = 0
+					break;
+				default:
+					System.out.println("Cal triar un tipus d'entitat valid");
+					break;
+			}
 		}
 	}
 
