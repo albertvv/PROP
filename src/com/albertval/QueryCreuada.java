@@ -2,6 +2,8 @@ package com.albertval;
 
 import javafx.util.Pair;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -13,17 +15,16 @@ public class QueryCreuada extends Query {
             this.r1 = r1;
             this.r2 = r2;
         }
-    private void cercadico(String nome){
 
-    }
-
-    public Vector< Pair<Entidad,Double> > CreuaResultats(){ //suposem està ordenat per nom
-        Vector< Pair<Entidad,Double> > vd = new Vector<>(); //podria ser un map en funció de metrica
+    public Map<Integer,Double> CreuaResultats(){ //suposem està ordenat per nom
+        Map<Integer,Double> md = new HashMap<>(); //podria ser un map en funció de metrica
         boolean found = false;
-        for(int i=0;i<r1.getVe().size();++i){
-            cercadico(r1.getVe().get(i).getKey().getNombre()); // si fos map es podria fer amb un find
+        for (Map.Entry<Integer,Double> entry : r1.getRes().entrySet()){
+            if(r2.getRes().containsKey(entry.getKey())){
+                md.put(entry.getKey(),(r1.getRes().get(entry.getKey())+entry.getValue())/2);
+            }
         }
-        return vd;
+        return md;
     }
 
 }

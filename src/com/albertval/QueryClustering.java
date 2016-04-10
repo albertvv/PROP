@@ -19,14 +19,26 @@ public class QueryClustering extends Query {
         assignagrups(vvs);
         for(int i=0;i<it;++i) {
             centramedioide();
-            assignagrups(vvs);
+            reassigna(vvs);
         }
         return null;
     }
 
+    private void reassigna(Vector<Vector<String>> vvs) {
+    }
+
     private void assignagrups(Vector<Vector<String>> vvs) {
-        for (int i = 0; i <ngrups ; i++) {
-            if(dist(vs.get(i),vvs.get(i).get(0))>0){}
+        double relmedioide=0;
+        int num=0;
+        for (int i = 0; i < vs.size() ; i++) {
+            for (int j = 0; j < ngrups ; j++) {
+                double aux = dist(vs.get(i), vvs.get(j).get(0));
+                if (aux > relmedioide) {
+                    num = j;
+                    relmedioide = aux;
+                }
+            }
+            vvs.get(num).add(vs.get(i));
         }
     }
 
@@ -39,7 +51,8 @@ public class QueryClustering extends Query {
         for(int i=0;i<ngrups;++i){
             int randomint = r.nextInt(vs.size());
             vvs.add(new Vector<>());
-            vvs.get(i).add(vs.get(randomint));
+            vvs.get(i).add(vs.get(randomint)); //Cada fila es un grup
+            vs.remove(randomint);
         }
     }
 
