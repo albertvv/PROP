@@ -34,8 +34,8 @@ public class Grafo {
 	}
 
 
-	//METODES	     /*___________*/
-	public void addEntidad(Integer id, String nombre, String tipoEntidad) {
+	//METODES
+	public void addEntidad(String nombre, String tipoEntidad) {
 		if (!diccionariEntitats.containskey(nombre))
 			System.out.println("El nom ha de ser valid");
 		else {
