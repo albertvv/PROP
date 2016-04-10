@@ -9,25 +9,11 @@ import java.util.Vector;
  * Created by Albert on 08/04/2016.
  */
 public class QueryRellevancia extends Query{
-    private Double resultat;
-
-    QueryRellevancia(String path, Vector<String> vs) {
-        super(path, vs);
+    public QueryRellevancia(String path, Vector<String> vs, Metrica m) {
+        super(path, vs, m);
     }
 
-//    public QueryRellevancia(String path, Vector<String> vs) {
-//        this.path = path;
-//        this.vs = vs;
-//    }
-
-    public Double getResultat() {
-        return resultat;
-    }
-    //Pre: la longitud del path es la mateix que la de la llista entitat
-    //les entitats que no hem definit en el vector son nules
-    //el primer i el ultim element de la llista no son nuls
-
-    public Double Cerca(Metrica m/*,matriu a,matriu c,matriu t*/){
+    public Double Cerca(){
         Double res=1.0;
         String aux;
         Integer i=0,iaux;
