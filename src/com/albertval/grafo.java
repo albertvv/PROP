@@ -3,32 +3,28 @@
 public class Grafo {
 	
 	//ATRIBUTS
-	private SparseVector<Autor>		vectorAutor;
-	private SparseVector<Conferencia>	vectorConferencia;
-	private SparseVector<Termino>		vectorTermino;
-	private SparseVector<Articulo>		vectorArticulo;
+	private Vector<Autor>		vectorAutor;
+	private Vector<Conferencia>	vectorConferencia;
+	private Vector<Termino>		vectorTermino;
+	private Vector<Articulo>	vectorArticulo;
 
-	private SparseMatrix<boolean>	matrizPaperAutor;
-	private SparseMatrix<boolean>	matrizPaperConferencia;
-	private SparseMatrix<boolean>	matrizPaperTermino;
-
-	private HashMap<String,Integer> diccionariEntitats; //[NOU] per trobar la id a partir del nom d'una Entitat
+	private SparseMatrix	matrizPaperAutor;
+	private SparseMatrix	matrizPaperConferencia;
+	private SparseMatrix	matrizPaperTermino;
 
 	private Integer lastId;
 
 
 	//CONSTRUCTORA
 	public Grafo() {
-		vectorAutor 		= new SparseVector<Autor>();
-		vectorConferencia	= new SparseVector<Conferencia>();
-		vectorTermino 		= new SparseVector<Termino>();
-		vectorArticulo 		= new SparseVector<Articulo>();
+		vectorAutor 			= new Vector<Autor>();
+		vectorConferencia		= new Vector<Conferencia>();
+		vectorTermino 			= new Vector<Termino>();
+		vectorArticulo 			= new Vector<Articulo>();
 
-		matrizPaperAutor 	= new SparseMatrix<boolean>();
-		matrizPaperConferencia 	= new SparseMatrix<boolean>();
-		matrizPaperTermino 	= new SparseMatrix<boolean>();
-
-		diccionariEntitats	= new HashMap<String,Integer>();
+		matrizPaperAutor 		= new SparseMatrix();
+		matrizPaperConferencia		= new SparseMatrix();
+		matrizPaperTermino 		= new SparseMatrix();
 
 		lastId = -1;
 	}
@@ -36,37 +32,32 @@ public class Grafo {
 
 	//METODES
 	public void addEntidad(String nombre, String tipoEntidad) {
-		if (!diccionariEntitats.containskey(nombre))
-			System.out.println("El nom ha de ser valid");
-		else {
-			switch (tipoEntidad) {
-				Integer index = diccionariEntitats.get(nombre);
-				case "Articulo":
-					Articulo tmpArticulo = new Articulo(index, nombre);
-					vectorArticulo.set(index, tmpArticulo);
-					//matrizPaperAutor[index][0..nAutors] = 0
-					//matrizPaperConferencia[index][0..nConferencies] = 0
-					//matrizPaperTermino[index][0..nTerminos] = 0
-					break;
-				case "Autor":
-					Autor tmpAutor = new Autor(index, nombre);
-					vectorAutor.set(index, tmpAutor);
-					//matrizPaperAutor[0..nPapers][index] = 0
-					break;
-				case "Conferencia":
-					Conferencia tmpConferencia = new Conferencia(index, nombre);
-					vectorConferencia.set(index, tmpConferencia);
-					//matrizPaperConferencia[0..nPapers][index] = 0
-					break;
-				case "Termino":
-					Termino tmpTermino = new Termino(index, nombre);
-					vectorTermino.set(index, tmpTermino);
-					//matrizPaperTermino[0..nPapers][index] = 0
-					break;
-				default:
-					System.out.println("Cal triar un tipus d'entitat valid");
-					break;
-			}
+		switch (tipoEntidad) {
+			case "Articulo":
+				Articulo tmpArticulo = new Articulo(getIndice(lastId++, nombre);
+				vectorArticulo.set(index, tmpArticulo);
+				//matrizPaperAutor[index][0..nAutors] = 0
+				//matrizPaperConferencia[index][0..nConferencies] = 0
+				//matrizPaperTermino[index][0..nTerminos] = 0
+				break;
+			case "Autor":
+				Autor tmpAutor = new Autor(lastId++, nombre);
+				vectorAutor.set(index, tmpAutor);
+				//matrizPaperAutor[0..nPapers][index] = 0
+				break;
+			case "Conferencia":
+				Conferencia tmpConferencia = new Conferencia(lastId++, nombre);
+				vectorConferencia.add(index, tmpConferencia);
+				//matrizPaperConferencia[0..nPapers][index] = 0
+				break;
+			case "Termino":
+				Termino tmpTermino = new Termino(lastId++, nombre);
+				vectorTermino.add(tmpTermino);
+				//matrizPaperTermino[0..nPapers][index] = 0
+				break;
+			default:
+				System.out.println("Cal triar un tipus d'entitat valid");
+				break;
 		}
 	}
 
@@ -98,130 +89,112 @@ public class Grafo {
 	}
 
 	public void addRelacion(String nombre1, String nombre2, String tipoRelacion) {
-		if (nombre1.equals(nombre2))
-			System.out.println("Els noms han de ser diferents!");
-		else if (!diccionariEntitats.containskey(nombre1) || !diccionariEntitats.containskey(nombre2))
-			System.out.println("Els dos noms han de ser valids");
-		else {
-			Integer index1 = diccionariEntitats.get(nombre1), index2 = diccionariEntitats.get(nombre2);
-			switch (tipoRelacion) {
-				case "Articulo":
-					matrizPaperAutor.set(index1, index2, TRUE);
-					matrizPaperAutor.set(index2, index1, TRUE);
-					matrizPaperConferencia.set(index1, index2, TRUE);
-					matrizPaperConferencia.set(index2, index1, TRUE);
-					matrizPaperTermino.set(index1, index2, TRUE);
-					matrizPaperTermino.set(index2, index1, TRUE);
-					break;
-				case "Autor":
-					matrizPaperAutor.set(index1, index2, TRUE);
-					matrizPaperAutor.set(index2, index1, TRUE);
-					break;
-				case "Conferencia":
-					matrizPaperConferencia.set(index1, index2, TRUE);
-					matrizPaperConferencia.set(index2, index1, TRUE);
-					break;
-				case "Termino":
-					matrizPaperTermino.set(index1, index2, TRUE);
-					matrizPaperTermino.set(index2, index1, TRUE);
-					break;
-				default:
-					System.out.println("Cal triar un tipus d'entitat valid");
-					break;
-			}
+		switch (tipoRelacion) {
+			case "Articulo":
+				Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Articulo");
+				matrizPaperAutor.set(index1, index2, 1);
+				matrizPaperAutor.set(index2, index1, 1);
+				matrizPaperConferencia.set(index1, index2, 1);
+				matrizPaperConferencia.set(index2, index1, 1);
+				matrizPaperTermino.set(index1, index2, 1);
+				matrizPaperTermino.set(index2, index1, 1);
+				break;
+			case "Autor":
+				Integer index1 = getIndice(nombre1, "Autor"), index2 = getIndice(nombre2, "Autor");
+				matrizPaperAutor.set(index1, index2, 1);
+				matrizPaperAutor.set(index2, index1, 1);
+				break;
+			case "Conferencia":
+				Integer index1 = getIndice(nombre1, "Conferencia"), index2 = getIndice(nombre2, "Conferencia");
+				matrizPaperConferencia.set(index1, index2, 1);
+				matrizPaperConferencia.set(index2, index1, 1);
+				break;
+			case "Termino":
+				Integer index1 = getIndice(nombre1, "Termino"), index2 = getIndice(nombre2, "Termino");
+				matrizPaperTermino.set(index1, index2, 1);
+				matrizPaperTermino.set(index2, index1, 1);
+				break;
+			default:
+				System.out.println("Cal triar un tipus d'entitat valid");
+				break;
 		}
 	}
 
 	public void deleteRelacion(String nombreOrigen, String nombreDesti, String tipoRelacion) {
-		if (nombre1.equals(nombre2))
-			System.out.println("Els noms han de ser diferents!");
-		else if (!diccionariEntitats.containskey(nombre1) || !diccionariEntitats.containskey(nombre2))
-			System.out.println("Els dos noms han de ser valids");
-		else {
-			Integer index1 = diccionariEntitats.get(nombre1), index2 = diccionariEntitats.get(nombre2);
-			switch (tipoRelacion) {
-				case "Articulo":
-					matrizPaperAutor.set(index1, index2, FALSE);
-					matrizPaperAutor.set(index2, index1, FALSE);
-					matrizPaperConferencia.set(index1, index2, FALSE);
-					matrizPaperConferencia.set(index2, index1, FALSE);
-					matrizPaperTermino.set(index1, index2, FALSE);
-					matrizPaperTermino.set(index2, index1, FALSE);
-					break;
-				case "Autor":
-					matrizPaperAutor.set(index1, index2, FALSE);
-					matrizPaperAutor.set(index2, index1, FALSE);
-					break;
-				case "Conferencia":
-					matrizPaperConferencia.set(index1, index2, FALSE);
-					matrizPaperConferencia.set(index2, index1, FALSE);
-					break;
-				case "Termino":
-					matrizPaperTermino.set(index1, index2, FALSE);
-					matrizPaperTermino.set(index2, index1, FALSE);
-					break;
-				default:
-					System.out.println("Cal triar un tipus d'entitat valid");
-					break;
-			}
+		switch (tipoRelacion) {
+			case "Articulo":
+				Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Articulo");
+				matrizPaperAutor.set(index1, index2, 0);
+				matrizPaperAutor.set(index2, index1, 0);
+				matrizPaperConferencia.set(index1, index2, 0);
+				matrizPaperConferencia.set(index2, index1, 0);
+				matrizPaperTermino.set(index1, index2, 0);
+				matrizPaperTermino.set(index2, index1, 0);
+				break;
+			case "Autor":
+				Integer index1 = getIndice(nombre1, "Autor"), index2 = getIndice(nombre2, "Autor");
+				matrizPaperAutor.set(index1, index2, 0);
+				matrizPaperAutor.set(index2, index1, 0);
+				break;
+			case "Conferencia":
+				Integer index1 = getIndice(nombre1, "Conferencia"), index2 = getIndice(nombre2, "Conferencia");
+				matrizPaperConferencia.set(index1, index2, 0);
+				matrizPaperConferencia.set(index2, index1, 0);
+				break;
+			case "Termino":
+				Integer index1 = getIndice(nombre1, "Termino"), index2 = getIndice(nombre2, "Termino");
+				matrizPaperTermino.set(index1, index2, 0);
+				matrizPaperTermino.set(index2, index1, 0);
+				break;
+			default:
+				System.out.println("Cal triar un tipus d'entitat valid");
+				break;
 		}
 	}
 
 	public Vector< Entidad > getRelacion(String nombre, String tipoEntidad) {
-		if (!diccionariEntitats.containskey(nombre))
-			System.out.println("El nom ha de ser valid!");
-		else {
-			switch (tipoEntidad) {
-				case "Articulo":
-					//relacions a matrizPaperAutor
-					//relacions a matrizPaperConferencia
-					//relacions a matrizPaperTermino
-					break;
-				case "Autor":
-					//relacions a matrizPaperAutor
-					break;
-				case "Conferencia":
-					//relacions a matrizPaperConferencia
-					break;
-				case "Termino":
-					//relacions a matrizPaperTermino
-					break;
-				default:
-					System.out.println("Cal triar un tipus d'entitat valid");
-					break;
-			}
+		switch (tipoEntidad) {
+			case "Articulo":
+				//relacions a matrizPaperAutor
+				//relacions a matrizPaperConferencia
+				//relacions a matrizPaperTermino
+				break;
+			case "Autor":
+				//relacions a matrizPaperAutor
+				break;
+			case "Conferencia":
+				//relacions a matrizPaperConferencia
+				break;
+			case "Termino":
+				//relacions a matrizPaperTermino
+				break;
+			default:
+				System.out.println("Cal triar un tipus d'entitat valid");
+				break;
 		}
 	}
 
 	public Entidad getEntidad(String nombre, String tipoEntidad) {
-		if (!diccionariEntitats.containskey(nombre)) {
-			System.out.println("El nom ha de ser valid!");
-			return NULL;
-		}
-		else {
-			Integer index = diccionariEntitats.get(nombre);
-			switch (tipoEntidad) {
-				case "Articulo":
-					return vectorArticulo.get(index);
-				case "Autor":
-					return vectorAutor.get(index);
-				case "Conferencia":
-					return vectorConferencia.get(index);
-				case "Termino":
-					return vectorTermino.get(index);
-				default:	
-					System.out.println("Cal triar un tipus d'entitat valid");
-					return NULL;
-			}
+		switch (tipoEntidad) {
+			case "Articulo":
+				return vectorArticulo.get(getIndice(nombre, "Articulo"));
+			case "Autor":
+				return vectorAutor.get(getIndice(nombre, "Autor"));
+			case "Conferencia":
+				return vectorConferencia.get(getIndice(nombre, "Conferencia"));
+			case "Termino":
+				return vectorTermino.get(getIndice(nombre, "Termino"));
+			default:	
+				System.out.println("Cal triar un tipus d'entitat valid");
+				return NULL;
 		}
 	}
 
 	public Integer getIndice(String nombre, String tipo) {
-		if (!diccionariEntitats.containskey(nombre)) return -1;
-		return diccionariEntitats.get(nombre);
+		//
 	}
 
-	public Vector< Vector<Integer> > getMatriz(String tipoFila, String tipoColumna) {
+	public SparseMatrix getMatriz(String tipoFila, String tipoColumna) {
 		//Per a què?
 	}
 }
