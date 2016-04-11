@@ -26,7 +26,7 @@ public class QueryRelimportant extends Query {
     }
 
     private void Volcadades(Map<Integer,Double> m, SparseVector v) {
-        for (int i = 0; i < v.cardinality(); i++) {
+        for (int i = 0; i < v.size(); i++) { //es podria millorar una mica amb while m < v.cardinality
            if(!v.isZeroAt(i)) m.put(i,v.get(i));
         }
     }
