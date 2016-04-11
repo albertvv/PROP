@@ -18,13 +18,26 @@ public class QueryClustering extends Query {
         randommedioides(vvs);
         assignagrups(vvs);
         for(int i=0;i<it;++i) {
-            centramedioide();
+            for(int j=0;j<ngrups;++j) centramedioide(j); //es podria fer que retornes un bool per si es recentren o ja no es mouen mes
             reassigna(vvs);
         }
         return null;
     }
 
     private void reassigna(Vector<Vector<String>> vvs) {
+        for (int i = 0; i < vvs.size(); ++i){
+            for( int j = 1 ; j < vvs.get(i).size(); ++j){
+                for ( int k=0; k<ngrups;++k){
+                    double aux = dist(vvs.get(i).get(j),vvs.get(k).get(0));
+                    if (aux > relmedioide) {
+                    num = j;
+                    relmedioide = aux;
+                    }
+                }
+                vvs.get(i).add(.....);
+                vvs.delete(.....);
+            }
+        }
     }
 
     private void assignagrups(Vector<Vector<String>> vvs) {
@@ -56,7 +69,9 @@ public class QueryClustering extends Query {
         }
     }
 
-    private void centramedioide() {
+    private void centramedioide(int j) {
+        //calcula relevanciamitja per a cada element de la fila i busquem qui té la maxima que serà el nou medioide
+        //relevanciamitja = Erelevancies/ #elements-1 (no es fa amb ell mateix)
     }
 
 }
