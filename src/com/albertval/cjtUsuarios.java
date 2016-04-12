@@ -1,7 +1,6 @@
 import java.util.HashMap;
 
 public class cjtUsuarios{
-    public static class cjtUsuaris {
         private static HashMap<String, Usuario> cjt = new HashMap<String, Usuario>();
         public static void afegir_usuari(String nom, Usuario user) {
             cjt.put(nom, user);
@@ -13,5 +12,4 @@ public class cjtUsuarios{
         public static Usuario consultar_usuari(String nom) {
             return cjt.get(nom);
         }
-    }
 }
