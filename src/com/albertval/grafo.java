@@ -1,17 +1,19 @@
-/* Llibreries */
+import java.util.Vector;
+import org.la4j.matrix.SparseMatrix;
 
 public class Grafo {
 	
 	//ATRIBUTS
+	/*Vectors d'entitats*/
 	private Vector<Autor>		vectorAutor;
 	private Vector<Conferencia>	vectorConferencia;
 	private Vector<Termino>		vectorTermino;
 	private Vector<Articulo>	vectorArticulo;
-
+	/*Matrius d'adjacencia*/
 	private SparseMatrix	matrizPaperAutor;
 	private SparseMatrix	matrizPaperConferencia;
 	private SparseMatrix	matrizPaperTermino;
-
+	/*Darrera ID emprada*/
 	private Integer lastId;
 
 
@@ -23,7 +25,7 @@ public class Grafo {
 		vectorArticulo 			= new Vector<Articulo>();
 
 		matrizPaperAutor 		= new SparseMatrix();
-		matrizPaperConferencia		= new SparseMatrix();
+		matrizPaperConferencia	= new SparseMatrix();
 		matrizPaperTermino 		= new SparseMatrix();
 
 		lastId = -1;
@@ -34,25 +36,25 @@ public class Grafo {
 	public void addEntidad(String nombre, String tipoEntidad) {
 		switch (tipoEntidad) {
 			case "Articulo":
-				Articulo tmpArticulo = new Articulo(getIndice(lastId++, nombre);
-				vectorArticulo.set(index, tmpArticulo);
+				Articulo tmpArticulo = new Articulo(getIndice(lastId++, nombre));
+				vectorArticulo.addElement(index, tmpArticulo);
 				//matrizPaperAutor[index][0..nAutors] = 0
 				//matrizPaperConferencia[index][0..nConferencies] = 0
 				//matrizPaperTermino[index][0..nTerminos] = 0
 				break;
 			case "Autor":
 				Autor tmpAutor = new Autor(lastId++, nombre);
-				vectorAutor.set(index, tmpAutor);
+				vectorAutor.addElement(index, tmpAutor);
 				//matrizPaperAutor[0..nPapers][index] = 0
 				break;
 			case "Conferencia":
 				Conferencia tmpConferencia = new Conferencia(lastId++, nombre);
-				vectorConferencia.add(index, tmpConferencia);
+				vectorConferencia.addElement(index, tmpConferencia);
 				//matrizPaperConferencia[0..nPapers][index] = 0
 				break;
 			case "Termino":
 				Termino tmpTermino = new Termino(lastId++, nombre);
-				vectorTermino.add(tmpTermino);
+				vectorTermino.addElement(tmpTermino);
 				//matrizPaperTermino[0..nPapers][index] = 0
 				break;
 			default:
@@ -63,7 +65,6 @@ public class Grafo {
 
 	public void deleteEntidad(String nombre, String tipoEntidad) {
 		switch (tipoEntidad) {
-			//esborrar instancia del map
 			case "Articulo":
 				//esborrar referencia
 				//esborrar relacions matrizPaperAutor
@@ -152,25 +153,43 @@ public class Grafo {
 		}
 	}
 
-	public Vector< Entidad > getRelacion(String nombre, String tipoEntidad) {
+	public Vector<Entidad> getRelacion(String nombre, String tipoEntidad) {
+		Vector<Entidad> vR = new Vector<Entidad>();
 		switch (tipoEntidad) {
 			case "Articulo":
 				//relacions a matrizPaperAutor
 				//relacions a matrizPaperConferencia
 				//relacions a matrizPaperTermino
-				break;
+				for (int i = 0; i < ???; i++) {
+					if (i < vectorAutor.length())
+						if (matrizPaperAutor.get(i, ???) == 1) vR.addElement(vectorArticulo.elementAt(i));
+					if (i < vectorConferencia.length())
+						if (matrizPaperConferencia.get(i, ???) == 1) vR.addElement(vectorConferencia.elementAt(i));
+					if (i < vectorTermino.length())
+						if (matrizPaperTermino.get(i, ???) == 1) vR.addElement(vectorTermino.elementAt(i));
+				}
+				return vR;
 			case "Autor":
 				//relacions a matrizPaperAutor
-				break;
+				for (int i = 0; i < ???; ++i) {
+					if (matrizPaperAutor.get(i, ???) == 1) vR.addElement(vectorArticulo.elementAt(i));
+				}
+				return vR;
 			case "Conferencia":
 				//relacions a matrizPaperConferencia
-				break;
+				for (int i = 0; i < ???; ++i) {
+					if (matrizPaperConferencia.get(i, ???) == 1) vR.addElement(vectorConferencia.elementAt(i));
+				}
+				return vR;
 			case "Termino":
 				//relacions a matrizPaperTermino
-				break;
+				for (int i = 0; i < ???; ++i) {
+					if (matrizPaperTermino.get(i, ???) == 1) vR.addElement(vectorTermino.elementAt(i));
+				}
+				return vR;
 			default:
 				System.out.println("Cal triar un tipus d'entitat valid");
-				break;
+				return vR;
 		}
 	}
 
