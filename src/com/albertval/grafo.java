@@ -25,7 +25,7 @@ public class Grafo {
 		vectorArticulo 			= new Vector<Articulo>();
 
 		matrizPaperAutor 		= new SparseMatrix();
-		matrizPaperConferencia	= new SparseMatrix();
+		matrizPaperConferencia		= new SparseMatrix();
 		matrizPaperTermino 		= new SparseMatrix();
 
 		lastId = -1;
