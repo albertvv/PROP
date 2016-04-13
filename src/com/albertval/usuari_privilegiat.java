@@ -8,20 +8,21 @@ public class usuari_privilegiat extends usuari_estandard {
         setSexo(standard_user.getSexo());
         setFechaN(standard_user.getFechaN());
     }
-    public boolean modificar_usuari(String username, String oldPass, String pass, String nom, String sexe, Date naix){
-        usuari_estandard user = (usuari_estandard)cjtUsuarios.cjtUsuaris.consultar_usuari(username);
+    public usuari_estandard auxiliar(String username){
+        return (usuari_estandard)cjtUsuarios.consultar_usuari(username);
+    }
+    public boolean modificar_usuari(usuari_estandard user, String oldPass, String pass, String nom, String sexe, Date naix){
         return modificar_usuari_aux(user, oldPass, pass, nom, sexe, naix);
     }
     public boolean borrar_usuari(String username){
-        return cjtUsuarios.cjtUsuaris.borrar_usuari(username);
+        return cjtUsuarios.borrar_usuari(username);
     }
     public void crear_usuari(String nom, String password){
         usuari_estandard user = new usuari_estandard(nom, password);
-        cjtUsuarios.cjtUsuaris.afegir_usuari(nom, user);
+        cjtUsuarios.afegir_usuari(nom, user);
     }
-    public void donar_privilegis(String username){
-        usuari_estandard user = (usuari_estandard) cjtUsuarios.cjtUsuaris.consultar_usuari(username);
+    public void donar_privilegis(usuari_estandard user){
         usuari_privilegiat up = new usuari_privilegiat(user);
-        cjtUsuarios.cjtUsuaris.afegir_usuari(username, up);
+        cjtUsuarios.afegir_usuari(user.getUsername(), up);
     }
 }

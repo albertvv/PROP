@@ -10,14 +10,11 @@ public class usuari_estandard extends Usuario {
     public usuari_estandard(String user, String pass) {super(user, pass);}
 
     public boolean esborrar_relacio(String nom) {
-        if (Relacions.containsKey(nom)) {
-            Relacions.remove(nom);
-            return true;
-        }
-        return false;
+        if(Relacions.remove(nom) == null) return false;
+        return true;
     }
 
-    public boolean definir_relacio(String nom, String path, String descripcio) {//descripcio pot ser NULL
+    public boolean definir_relacio(String nom, String path, String descripcio) {
         if (Relacions.containsKey(nom)) return false;
         TipoRelacion relacio = new TipoRelacion(nom, path);
         if (descripcio != null) relacio.setDescripcion(descripcio);
@@ -42,8 +39,8 @@ public class usuari_estandard extends Usuario {
     }
 
 //------------------------------------GESTIO DE L'USUARI-------------------------------------------------------------
-    protected void guardar_usuari(){
-        cjtUsuarios.cjtUsuaris.afegir_usuari(getUsername(), this);
+    public void guardar_usuari(){
+        cjtUsuarios.afegir_usuari(getUsername(), this);
     }
     protected boolean modificar_usuari_aux(usuari_estandard user, String oldPass, String pass, String nom, String sexe, Date naix){
         boolean canvi = false;
@@ -55,7 +52,7 @@ public class usuari_estandard extends Usuario {
         if(naix != null) if(user.setFechaN(naix)) canvi = true;
         if(pass != null) if(user.setPassword(oldPass, pass)) canvi = true;
         if(canvi) {
-            cjtUsuarios.cjtUsuaris.afegir_usuari(user.getUsername(), user);
+            cjtUsuarios.afegir_usuari(user.getUsername(), user);
             return true;
         }
         return false;
@@ -63,6 +60,8 @@ public class usuari_estandard extends Usuario {
     public boolean modificar_usuari(String oldPass, String pass, String nom, String sexe, Date naix){
         return modificar_usuari_aux(this, oldPass, pass, nom, sexe, naix);
     }
-    public boolean borrar_usuari(){return cjtUsuarios.cjtUsuaris.borrar_usuari(getUsername());}
+    public boolean borrar_usuari(){
+        return cjtUsuarios.borrar_usuari(getUsername());
+    }
 
 }
