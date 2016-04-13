@@ -3,6 +3,7 @@ package com.albertval;
 import javafx.util.Pair;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -18,13 +19,18 @@ public class QueryCreuada extends Query {
 
     public Map<Integer,Double> CreuaResultats(){ //suposem està ordenat per nom
         Map<Integer,Double> md = new HashMap<>(); //podria ser un map en funció de metrica
-        boolean found = false;
-        for (Map.Entry<Integer,Double> entry : r1.getRes().entrySet()){
-            if(r2.getRes().containsKey(entry.getKey())){
-                md.put(entry.getKey(),(r1.getRes().get(entry.getKey())+entry.getValue())/2);
+       // Iterator it = r1.getRes().keySet().iterator();
+        for(Map.Entry<Integer,Double> m : r1.getRes().entrySet()) {
+            if(r2.getRes().containsKey(m.getKey())){
+                md.put(m.getKey(),((m.getValue()+r2.getRes().get(m.getKey()))/2));
             }
         }
         return md;
     }
-
+ // Potser es mes facil que retorni sparse vector i creues en un sol vector
+//    public Vector<Pair<Integer,Double>> CreuaResultats(){ //suposem està ordenat per nom
+//        Vector<Pair<Integer,Double>> vd = new Vector<>(); //podria ser un map en funció de metrica
+//
+//        return vd;
+//    }
 }

@@ -21,8 +21,12 @@ public abstract class Query {
     }
 
     protected Query(String path, Metrica m) {
+        this.path = path;
+        this.m = m;
     }
 
     protected Query(String path,Vector<String> vs) {
+        this.path = path;
+        this.vs = vs;
     }
 }
