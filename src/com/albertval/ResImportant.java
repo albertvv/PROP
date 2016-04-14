@@ -1,21 +1,16 @@
-package com.albertval;
-
-
+/**
+ * Created by Àlvar on 12/04/2016.
+ */
+package alvarhc2;
 import org.la4j.vector.SparseVector;
 
-import java.util.Map;
-
-/**
- * Created by Albert on 10/04/2016.
- */
 public class ResImportant {
-    private SparseVector res;
+    private SparseVector vecEntRel;
 
-    public ResImportant(SparseVector res) {
-        this.res = res;
+    public ResultadoRelImport(QueryRelimportant q) {
+        vecEntRel = q.Cerca();
     }
-
-    public SparseVector getRes() {
-        return res;
+    public SparseVector Resultat() {
+        return vecEntRel;
     }
 }
