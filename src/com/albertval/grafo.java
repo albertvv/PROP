@@ -1,5 +1,7 @@
-import java.util.Vector;
+package com.albertval;
+
 import org.la4j.matrix.SparseMatrix;
+import java.util.Vector;
 
 public class Grafo {
 	
@@ -25,7 +27,7 @@ public class Grafo {
 		vectorArticulo 			= new Vector<Articulo>();
 
 		matrizPaperAutor 		= new SparseMatrix();
-		matrizPaperConferencia		= new SparseMatrix();
+		matrizPaperConferencia	= new SparseMatrix();
 		matrizPaperTermino 		= new SparseMatrix();
 
 		lastId = -1;
@@ -33,32 +35,62 @@ public class Grafo {
 
 
 	//METODES
+
+	/*Aquest mètode ara és privat (no té sentit que sigui públic)*/
+	private int getIndice(String nombre, String tipo) {
+		switch (tipo) {
+			case "Articulo":
+				int n = vectorArticulo.size();
+				for (int i = 0; i < n; ++n)
+					if (vectorArticulo.get(i).getNombre().equals(nombre)) return i;
+			case "Autor":
+				int n = vectorAutor.size();
+				for (int i = 0; i < n; ++n)
+					if (vectorAutor.get(i).getNombre().equals(nombre)) return i;			
+			case "Conferencia":
+				int n = vectorConferencia.size();
+				for (int i = 0; i < n; ++n)
+					if (vectorConferencia.get(i).getNombre().equals(nombre)) return i;
+			case "Termino":
+				int n = vectorTermino.size();
+				for (int i = 0; i < n; ++n)
+					if (vectorTermino.get(i).getNombre().equals(nombre)) return i;
+			default:
+				System.out.println("Capsigrany! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino")
+				return NULL;
+		}
+	}
+
 	public void addEntidad(String nombre, String tipoEntidad) {
 		switch (tipoEntidad) {
 			case "Articulo":
-				Articulo tmpArticulo = new Articulo(getIndice(lastId++, nombre));
+				Articulo tmpArticulo = new Articulo(getIndice(++lastId, nombre));
 				vectorArticulo.addElement(index, tmpArticulo);
-				//matrizPaperAutor[index][0..nAutors] = 0
-				//matrizPaperConferencia[index][0..nConferencies] = 0
-				//matrizPaperTermino[index][0..nTerminos] = 0
+				Vector<double> tmpVec = new Vector<double>();
+				matrizPaperAutor.insertRow(vectorArticulo.size()-1, tmpVec);
+				matrizPaperConferencia.insertRow(vectorArticulo.size()-1, tmpVec);
+				matrizPaperTermino.insertRow(vectorArticulo.size()-1, tmpVec);
 				break;
 			case "Autor":
-				Autor tmpAutor = new Autor(lastId++, nombre);
+				Autor tmpAutor = new Autor(++lastId, nombre);
 				vectorAutor.addElement(index, tmpAutor);
-				//matrizPaperAutor[0..nPapers][index] = 0
+				Vector<double> tmpVec = new Vector<double>();
+				matrizPaperAutor.insertColumn(vectorAutor.size()-1, tmpVec);
 				break;
 			case "Conferencia":
-				Conferencia tmpConferencia = new Conferencia(lastId++, nombre);
+				Conferencia tmpConferencia = new Conferencia(++lastId, nombre);
 				vectorConferencia.addElement(index, tmpConferencia);
-				//matrizPaperConferencia[0..nPapers][index] = 0
+				Vector<double> tmpVec = new Vector<double>();
+				matrizPaperConferencia.insertColumn(vectorAutor.size()-1, tmpVec);
 				break;
 			case "Termino":
-				Termino tmpTermino = new Termino(lastId++, nombre);
+				Termino tmpTermino = new Termino(++lastId, nombre);
 				vectorTermino.addElement(tmpTermino);
-				//matrizPaperTermino[0..nPapers][index] = 0
+				Vector<double> tmpVec = new Vector<double>();
+				matrizPaperTermino.insertColumn(vectorAutor.size()-1, tmpVec);
 				break;
 			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Tros d'ase! Cal triar un tipus d'entitat valid");
 				break;
 		}
 	}
@@ -66,25 +98,33 @@ public class Grafo {
 	public void deleteEntidad(String nombre, String tipoEntidad) {
 		switch (tipoEntidad) {
 			case "Articulo":
-				//esborrar referencia
-				//esborrar relacions matrizPaperAutor
-				//esborrar relacions matrizPaperConferencia
-				//esborrar relacions matrizPaperTermino
+				int i = getIndice(nombre, "Articulo");
+				vectorArticulo.set(i, NULL);
+				matrizPaperAutor.removeRow(i);
+				matrizPaperConferencia.removeRow(i);
+				matrizPaperTermino.removeRow(i);
+				if (i == lastId) --lastId;
 				break;
 			case "Autor":
-				//esborrar referencia
-				//esborrar relacions matrizPaperAutor
+				int i = getIndice(nombre, "Autor");
+				vectorAutor.set(i, NULL);
+				matrizPaperAutor.removeColumn(i);
+				if (i == lastId) --lastId;
 				break;
 			case "Conferencia":
-				//esborrar referencia
-				//esborrar relacions matrizPaperConferencia
+				int i = getIndice(nombre, "Conferencia");
+				vectorConferencia.set(i, NULL);
+				matrizPaperConferencia.removeColumn(i);
+				if (i == lastId) --lastId;
 				break;
 			case "Termino":
-				//esborrar referencia
-				//esborrar relacions matrizPaperTermino
+				int i = getIndice(nombre, "Termino");
+				vectorTermino.set(i, NULL);
+				matrizPaperTermino.removeColumn(i);
+				if (i == lastId) --lastId;
 				break;
 			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Babau! Cal triar un tipus d'entitat valid");
 				break;
 		}
 	}
@@ -116,7 +156,7 @@ public class Grafo {
 				matrizPaperTermino.set(index2, index1, 1);
 				break;
 			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Capsigrany! Cal triar un tipus d'entitat valid");
 				break;
 		}
 	}
@@ -148,7 +188,7 @@ public class Grafo {
 				matrizPaperTermino.set(index2, index1, 0);
 				break;
 			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Tros de suro! Cal triar un tipus d'entitat valid");
 				break;
 		}
 	}
@@ -157,38 +197,44 @@ public class Grafo {
 		Vector<Entidad> vR = new Vector<Entidad>();
 		switch (tipoEntidad) {
 			case "Articulo":
-				//relacions a matrizPaperAutor
-				//relacions a matrizPaperConferencia
-				//relacions a matrizPaperTermino
-				for (int i = 0; i < ???; i++) {
-					if (i < vectorAutor.length())
-						if (matrizPaperAutor.get(i, ???) == 1) vR.addElement(vectorArticulo.elementAt(i));
-					if (i < vectorConferencia.length())
-						if (matrizPaperConferencia.get(i, ???) == 1) vR.addElement(vectorConferencia.elementAt(i));
-					if (i < vectorTermino.length())
-						if (matrizPaperTermino.get(i, ???) == 1) vR.addElement(vectorTermino.elementAt(i));
-				}
+				int n, i;
+				i = getIndice(nombre, "Articulo");
+				//autors:
+				n = vectorAutor.size();
+				for (int j = 0; j < n; ++j)
+					if (!matrizPaperAutor.isZeroAt(i, j)) vR.addElement(vectorAutor.elementAt(j));
+				//conferencies:
+				n = vectorConferencia.size();
+				for (int j = 0; j < n; ++j)
+					if (!matrizPaperConferencia.isZeroAt(i, j)) vR.addElement(vectorConferencia.elementAt(j));
+				//termes:
+				n = vectorTermino.size();
+				for (int j = 0; j < n; ++j)
+					if (!matrizPaperTermino.isZeroAt(i, j)) vR.addElement(vectorTermino.elementAt(j));
 				return vR;
 			case "Autor":
-				//relacions a matrizPaperAutor
-				for (int i = 0; i < ???; ++i) {
-					if (matrizPaperAutor.get(i, ???) == 1) vR.addElement(vectorArticulo.elementAt(i));
-				}
+				int n, j;
+				j = getIndice(nombre, "Autor");
+				n = vectorArticulo.size();
+				for (int i = 0; i < n; ++i)
+					if (!matrizPaperAutor.isZeroAt(i, j)) vR.addElement(vectorArticulo.elementAt(i));
 				return vR;
 			case "Conferencia":
-				//relacions a matrizPaperConferencia
-				for (int i = 0; i < ???; ++i) {
-					if (matrizPaperConferencia.get(i, ???) == 1) vR.addElement(vectorConferencia.elementAt(i));
-				}
+				int n, j;
+				j = getIndice(nombre, "Conferencia");
+				n = vectorArticulo.size();
+				for (int i = 0; i < n; ++i)
+					if (!matrizPaperConferencia.isZeroAt(i, j)) vR.addElement(vectorConferencia.elementAt(i));
 				return vR;
 			case "Termino":
-				//relacions a matrizPaperTermino
-				for (int i = 0; i < ???; ++i) {
-					if (matrizPaperTermino.get(i, ???) == 1) vR.addElement(vectorTermino.elementAt(i));
-				}
+				int n, j;
+				j = getIndice(nombre, "Termino");
+				n = vectorArticulo.size();
+				for (int i = 0; i < n; ++i)
+					if (!matrizPaperTermino.isZeroAt(i, j)) vR.addElement(vectorTermino.elementAt(i));
 				return vR;
 			default:
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Ruc! Cal triar un tipus d'entitat valid");
 				return vR;
 		}
 	}
@@ -204,16 +250,26 @@ public class Grafo {
 			case "Termino":
 				return vectorTermino.get(getIndice(nombre, "Termino"));
 			default:	
-				System.out.println("Cal triar un tipus d'entitat valid");
+				System.out.println("Tanoca! Cal triar un tipus d'entitat valid");
 				return NULL;
 		}
 	}
 
-	public Integer getIndice(String nombre, String tipo) {
-		//
-	}
-
 	public SparseMatrix getMatriz(String tipoFila, String tipoColumna) {
-		//Per a què?
+		if (tipoFila != "Articulo")/*atribut innecessari...?*/{
+			System.out.println("Gamarús! El tipus de fila de totes les matrius és 'Paper'");
+			return NULL;
+		}
+		switch (tipoColumna) {
+			case "Autor":
+				return matrizPaperAutor;
+			case "Conferencia":
+				return matrizPaperConferencia;
+			case "Termino":
+				return matrizPaperTermino;
+			default:
+				System.out.println("Talós! El tipus de columna ha de ser Autor, Conferencia o Termino");
+				return NULL;
+		}
 	}
 }
