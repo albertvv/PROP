@@ -10,11 +10,8 @@ import java.util.Vector;
  * Created by Albert on 08/04/2016.
  */
 public class QueryRellevancia extends Query{
-    private SparseMatrix m1;
-    private SparseMatrix m2;
-    private SparseMatrix m3;
     public QueryRellevancia(String path, Vector<String> vs, Metrica m, SparseMatrix m1,SparseMatrix m2, SparseMatrix m3) {
-        super(path, vs, m);
+        super(path, vs, m,m1,m2,m3);
         this.m1 = m1;
         this.m2 = m2;
         this.m3 = m3;

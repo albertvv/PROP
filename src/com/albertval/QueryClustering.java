@@ -11,15 +11,9 @@ import java.util.Vector;
  */
 public class QueryClustering extends Query {
     private int ngrups;
-    private SparseMatrix m1;
-    private SparseMatrix m2;
-    private SparseMatrix m3;
     public QueryClustering(String path, int numgrups, Vector<String> vs, SparseMatrix m1, SparseMatrix m2, SparseMatrix m3,Metrica m){
-        super(path,vs,m);
+        super(path,vs,m,m1,m2,m3);
         this.ngrups = numgrups;
-        this.m1 = m1;
-        this.m2 = m2;
-        this.m3 = m3;
     }
 
     public Vector<Vector<String>> Cerca(int it){

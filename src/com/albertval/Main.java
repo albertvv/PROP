@@ -1,25 +1,28 @@
 package com.albertval;
 
-import java.util.Random;
-import java.util.Vector;
+import org.la4j.iterator.VectorIterator;
+import org.la4j.matrix.SparseMatrix;
+import org.la4j.vector.SparseVector;
+
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.print("hey gent ");
         String hey = "ho";
-//        System.out.print(hey.substring(0,2));
-//        String path = "hola";
-//        Vector<String> vs = new Vector<>();
-//        Metrica m = new Metrica();
-//        Query q = new QueryRellevancia(path,vs,m);
-        Random r = new Random();
-        Vector<Vector<String>> vs = new Vector<>();
-        for(int i=0;i<10;++i) {
-            int randomint = r.nextInt(20);
-            vs.add(new Vector<String>());
-            vs.get(i).add("fac"+r);
-            System.out.println(randomint+" "+vs.size());
-        }
+        System.out.print("Introdueix nom de l'entitat :");
+        Scanner b = new Scanner(System.in);
+        String hola = b.next();
+//        String nom = "Juan";
+//        QueryRelimportant qr = new QueryRelimportant(path,nom,m,m1,m2,m3);
+//        Map<Integer,Double> map = qr.Cerca();
+//        Iterator it = map.keySet().iterator();
+//        while(it.hasNext()){
+//            Integer key = (Integer) it.next();
+//            System.out.println("Clave: " + key + " -> Valor: " + map.get(key));
+//        }
+
+
     }
 }
