@@ -8,9 +8,6 @@ public class usuari_privilegiat extends usuari_estandard {
         setSexo(standard_user.getSexo());
         setFechaN(standard_user.getFechaN());
     }
-    public usuari_estandard auxiliar(String username){
-        return (usuari_estandard)cjtUsuarios.consultar_usuari(username);
-    }
     public boolean modificar_usuari(usuari_estandard user, String oldPass, String pass, String nom, String sexe, Date naix){
         return modificar_usuari_aux(user, oldPass, pass, nom, sexe, naix);
     }
