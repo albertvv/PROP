@@ -1,6 +1,7 @@
-package com.albertval;
-
 import org.la4j.matrix.SparseMatrix;
+import org.la4j.vector.SparseVector;
+import org.la4j.vector.sparse.CompressedVector;
+
 import java.util.Vector;
 
 public class Grafo {
@@ -12,7 +13,7 @@ public class Grafo {
     private Vector<Termino>		vectorTermino;
     private Vector<Articulo>	vectorArticulo;
     /*Matrius d'adjacencia*/
-    private SparseMatrix	matrizPaperAutor;
+    private SparseMatrix    matrizPaperAutor;
     private SparseMatrix	matrizPaperConferencia;
     private SparseMatrix	matrizPaperTermino;
     /*Darrera ID emprada*/
@@ -66,15 +67,17 @@ public class Grafo {
             case "Articulo":
                 Articulo tmpArticulo = new Articulo(getIndice(++lastId, nombre));
                 vectorArticulo.addElement(index, tmpArticulo);
-                Vector<double> tmpVec = new Vector<double>();
-                matrizPaperAutor.insertRow(vectorArticulo.size()-1, tmpVec);
-                matrizPaperConferencia.insertRow(vectorArticulo.size()-1, tmpVec);
-                matrizPaperTermino.insertRow(vectorArticulo.size()-1, tmpVec);
+                SparseVector tmpVec1 = new CompressedVector(vectorAutor.size());
+                matrizPaperAutor.insertRow(vectorArticulo.size()-1, tmpVec1);
+                SparseVector tmpVec2 = new CompressedVector(vectorConferencia.size());
+                matrizPaperConferencia.insertRow(vectorArticulo.size()-1, tmpVec2);
+                SparseVector tmpVec3 = new CompressedVector(vectorArticulo.size());
+                matrizPaperTermino.insertRow(vectorArticulo.size()-1, tmpVec3);
                 break;
             case "Autor":
                 Autor tmpAutor = new Autor(++lastId, nombre);
                 vectorAutor.addElement(index, tmpAutor);
-                Vector<double> tmpVec = new Vector<double>();
+                Vector<Double> tmpVec = new Vector<Double>();
                 matrizPaperAutor.insertColumn(vectorAutor.size()-1, tmpVec);
                 break;
             case "Conferencia":
@@ -151,32 +154,20 @@ public class Grafo {
 
     public void deleteRelacion(String nombreOrigen, String nombreDesti, String tipoRelacion) {
         switch (tipoRelacion) {
-            case "Articulo":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Articulo");
+            case "AP":
+                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Autor");
                 matrizPaperAutor.set(index1, index2, 0);
-                matrizPaperAutor.set(index2, index1, 0);
+                break;
+            case "CP":
+                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Conferencia");
                 matrizPaperConferencia.set(index1, index2, 0);
-                matrizPaperConferencia.set(index2, index1, 0);
+                break;
+            case "TP":
+                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Termino");
                 matrizPaperTermino.set(index1, index2, 0);
-                matrizPaperTermino.set(index2, index1, 0);
-                break;
-            case "Autor":
-                Integer index1 = getIndice(nombre1, "Autor"), index2 = getIndice(nombre2, "Autor");
-                matrizPaperAutor.set(index1, index2, 0);
-                matrizPaperAutor.set(index2, index1, 0);
-                break;
-            case "Conferencia":
-                Integer index1 = getIndice(nombre1, "Conferencia"), index2 = getIndice(nombre2, "Conferencia");
-                matrizPaperConferencia.set(index1, index2, 0);
-                matrizPaperConferencia.set(index2, index1, 0);
-                break;
-            case "Termino":
-                Integer index1 = getIndice(nombre1, "Termino"), index2 = getIndice(nombre2, "Termino");
-                matrizPaperTermino.set(index1, index2, 0);
-                matrizPaperTermino.set(index2, index1, 0);
                 break;
             default:
-                System.out.println("Tros de suro! Cal triar un tipus d'entitat valid");
+                System.out.println("Talós! Cal triar un tipus d'entitat valid");
                 break;
         }
     }
@@ -244,7 +235,7 @@ public class Grafo {
     }
 
     public SparseMatrix getMatriz(String tipoFila, String tipoColumna) {
-        if (tipoFila != "Articulo")/*atribut innecessari...?*/{
+        if (!tipoFila.equals("Articulo"))/*atribut innecessari...?*/{
             System.out.println("Gamarús! El tipus de fila de totes les matrius és 'Paper'");
             return NULL;
         }
