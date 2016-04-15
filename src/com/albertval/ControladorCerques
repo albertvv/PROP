@@ -1,0 +1,35 @@
+
+public class ControladorCerques{
+    private Graf g;
+    private Metrica m;
+    private LlistaResultats lr;
+    public ControladorCerques(){
+      this.g = new Graf();
+      ControladorGrafPersist cgp = new ControladorGrafPersist();
+      cgp.carregagraf(g);
+      this.m= new Metrica();
+      lr = new LlistaResultats();
+      //instancio aqui un graf i el carrego?
+      //podriem utilitzar un altre controlador que instancies el graf?
+    }
+    public double CercaRellevancia(String path, Vector<String> vs){
+      QueryRellevancia qr = new QueryRellevancia(path,vs,m,g.getMatriz(Articulo,Autor),g.getMatriz(Articulo,Conferencia),
+                                                  g.getMatriz(Articulo,Termino));
+      return qr.Cerca();
+    }
+    public SparseVector CercaRelimportant(String path,String nomentitat){
+      QueryRelimportant qi= new QueryRelimportant(path,nomentitat,m,g.getMatriz(Articulo,Autor),g.getMatriz(Articulo,Conferencia),
+                                                  g.getMatriz(Articulo,Termino));
+      SparseVector sv= qi.Cerca();
+      ResImportant r = new ResImportant(qi,sv);
+      lr.insertaResImportant(r);
+      return sv;
+    }
+    public Vector<Entidad> CercaRelDirecta(String nom,String tipusentitat){
+      return g.getRelacion(nom,tipusentitat);
+    } 
+    public Vector<Pair<Integer,Double>> CercaCreuada(ResImportant r1,ResImportant r2){}
+    public Clustering(){}
+    public FiltratRelimportant(){}
+    public FiltratClustering(){}
+  }
