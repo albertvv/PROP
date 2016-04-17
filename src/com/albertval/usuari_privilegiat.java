@@ -8,18 +8,24 @@ public class usuari_privilegiat extends usuari_estandard {
         setSexo(standard_user.getSexo());
         setFechaN(standard_user.getFechaN());
     }
-    public boolean modificar_usuari(usuari_estandard user, String oldPass, String pass, String nom, String sexe, Date naix){
-        return modificar_usuari_aux(user, oldPass, pass, nom, sexe, naix);
+    public boolean modificar_usuari(String username, String pass, String nom, String sexe, Date naix, ConjuntoUsuarios<usuari_estandard> cjt){
+        usuari_estandard user = cjt.getUsuario(username);
+        return modificar_usuari_aux(user, user.getPassword(), pass, nom, sexe, naix, true);
     }
-    public boolean borrar_usuari(String username){
-        return cjtUsuarios.borrar_usuari(username);
+    public boolean borrar_usuari(String username, ConjuntoUsuarios cjt){
+        return cjt.deleteUsuario(username);
     }
-    public void crear_usuari(String nom, String password){
+    public boolean crear_usuari(String nom, String password, ConjuntoUsuarios cjt){
         usuari_estandard user = new usuari_estandard(nom, password);
-        cjtUsuarios.afegir_usuari(nom, user);
+        return cjt.addUsuario(user);
     }
-    public void donar_privilegis(usuari_estandard user){
-        usuari_privilegiat up = new usuari_privilegiat(user);
-        cjtUsuarios.afegir_usuari(user.getUsername(), up);
+    public boolean donar_privilegis(String username, ConjuntoUsuarios cjt){
+        usuari_estandard ue = (usuari_estandard)cjt.getUsuario(username);
+        if(ue == null) return false;
+        usuari_privilegiat up = new usuari_privilegiat(ue);
+        cjt.deleteUsuario(username);
+        cjt.addUsuario(up);
+        return true;
     }
 }
+
