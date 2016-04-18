@@ -251,4 +251,13 @@ public class Grafo {
                 return NULL;
         }
     }
+    //funcions que m'ha demanat l'Albert
+    public String getId(String nom, String tipusEntitat) {
+        //
+        return NULL;
+    }
+    public String getNombre(Integer id, String tipusEntitat) {
+        //
+        return NULL;
+    }
 }
