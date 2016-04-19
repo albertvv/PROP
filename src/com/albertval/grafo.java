@@ -266,13 +266,29 @@ public class grafo {
                 return NULL;
         }
     }
-    //funcions que m'ha demanat l'Albert
-    public Integer getId(String nom, String tipusEntitat) {
+    
+    //funcions que m'ha demanat l'Alvar
+    public vector<Articulo> getArticulos() {
         //
         return NULL;
     }
-    public String getNombre(Integer id, String tipusEntitat) {
+
+    public vector<Articulo> getAutors() {
         //
         return NULL;
+    }
+
+    public vector<Articulo> getConferencias() {
+        //
+        return NULL;
+    }
+
+    public vector<Articulo> getTerminos() {
+        //
+        return NULL;
+    }
+
+    public void addEntidadFull(Entidad e) {
+        //
     }
 }
