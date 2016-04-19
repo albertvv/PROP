@@ -7,9 +7,11 @@ public class usuari_privilegiat extends usuari_estandard {
         setNombre(standard_user.getNombre());
         setSexo(standard_user.getSexo());
         setFechaN(standard_user.getFechaN());
+        conjTRel = standard_user.getRelacions();
     }
     public boolean modificar_usuari(String username, String pass, String nom, String sexe, Date naix, ConjuntoUsuarios<usuari_estandard> cjt){
         usuari_estandard user = cjt.getUsuario(username);
+        if(user == null) return false;
         return modificar_usuari_aux(user, user.getPassword(), pass, nom, sexe, naix, true);
     }
     public boolean borrar_usuari(String username, ConjuntoUsuarios cjt){

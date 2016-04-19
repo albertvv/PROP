@@ -3,7 +3,7 @@ import java.util.*;
 public class ctr_usuari_dom {
     private Scanner sc = new Scanner(System.in);
     private ConjuntoUsuarios<usuari_estandard> cjt = new ConjuntoUsuarios<usuari_estandard>();
-    private usuari_estandard user = new usuari_privilegiat("admin", "admin");
+    private usuari_estandard user;
 
     public boolean crear_usuari(String username, String pass, boolean privilegiat){
         usuari_estandard user;
@@ -14,10 +14,13 @@ public class ctr_usuari_dom {
     public boolean afegir_relacio(String nom, String path, String descripcio){
         return user.definir_relacio(nom, path, descripcio);
     }
+    public boolean modificar_relacio(String nomAntic, String nomNou, String descripcio){
+        return user.modificar_relacio(nomAntic, nomNou, descripcio);
+    }
     public boolean esborrar_relacio(String nom){
         return user.deleteRelacion(nom);
     }
-    private TipoRelacion consultar_relacio(String nom){
+    public TipoRelacion consultar_relacio(String nom){
         return user.getRelacion(nom);
     }
     public ArrayList<ArrayList<String>> informacio_usuaris(){
@@ -26,7 +29,7 @@ public class ctr_usuari_dom {
         usuari_estandard auxiliar;
         Iterator it = map.keySet().iterator();
         while (it.hasNext()){
-            ArrayList<String> result_aux = new ArrayList<String>(5);
+            ArrayList<String> result_aux = new ArrayList<String>(6);
             String key = (String)it.next();
             auxiliar = map.get(key);
             result_aux.add(auxiliar.getUsername());
@@ -34,6 +37,7 @@ public class ctr_usuari_dom {
             result_aux.add(auxiliar.getNombre());
             result_aux.add(auxiliar.getSexo());
             result_aux.add(transformar_data.dateToString(auxiliar.getFechaN()));
+            result_aux.add(auxiliar.getClass().getSimpleName());
             result.add(result_aux);
         }
         return result;
@@ -63,24 +67,28 @@ public class ctr_usuari_dom {
         }
         return "0";
     }
-    public boolean modificar_usuari(String username, String oldPass, String pass, String nom, String sexe, String data, boolean esPrivilegiat) {
-        Date dataT = transformar_data.stringToDate(data);
-        if(esPrivilegiat) return aux_modificar_usuari((usuari_privilegiat)user, username, pass, nom, sexe, dataT);
-        else return user.modificar_usuari(oldPass, pass, nom, sexe, dataT);
+    public void borrar_usuari_estandard(){
+        cjt.deleteUsuario(user.getUsername());
     }
-    public boolean aux_modificar_usuari(usuari_privilegiat up, String username, String pass, String nom, String sexe, Date data){
+    public boolean modificar_usuari(String username, String oldPass, String pass, String nom, String sexe, Date data, boolean esPrivilegiat) {
+        if(esPrivilegiat) return aux_modificar_usuari((usuari_privilegiat)user, username, pass, nom, sexe, data);
+        else return user.modificar_usuari(oldPass, pass, nom, sexe, data);
+    }
+    private boolean aux_modificar_usuari(usuari_privilegiat up, String username, String pass, String nom, String sexe, Date data){
         return up.modificar_usuari(username, pass, nom, sexe, data, cjt);
     }
     public boolean borrar_usuari(String user_borrar){
         return aux_borrar_usuari((usuari_privilegiat)user, user_borrar);
     }
-    public boolean aux_borrar_usuari(usuari_privilegiat up, String user_borrar){
+    private boolean aux_borrar_usuari(usuari_privilegiat up, String user_borrar){
         return up.borrar_usuari(user_borrar, cjt);
     }
     public boolean donar_privilegis(String username){
+        usuari_estandard usuari = cjt.getUsuario(username);
+        if(usuari instanceof usuari_privilegiat) return false;
         return aux_donar_privilegis((usuari_privilegiat)user, username);
     }
-    public boolean aux_donar_privilegis(usuari_privilegiat user, String username){
+    private boolean aux_donar_privilegis(usuari_privilegiat user, String username){
         return user.donar_privilegis(username, cjt);
     }
 }

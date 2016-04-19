@@ -3,12 +3,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class usuari_estandard extends Usuario_generico {
-    private boolean privilegiat;
     public usuari_estandard() {}
 
     public usuari_estandard(String user, String pass) {super(user, pass);}
-
-    public String getPassword(){return password;}
 
     public boolean definir_relacio(String nom, String path, String descripcio) {
         if (conjTRel.containsKey(nom)) return false;
@@ -40,5 +37,8 @@ public class usuari_estandard extends Usuario_generico {
     }
     public boolean modificar_usuari(String oldPass, String pass, String nom, String sexe, Date naix){
         return modificar_usuari_aux(this, oldPass, pass, nom, sexe, naix, false);
+    }
+    public void borrar_usuari(ConjuntoUsuarios cjt){
+        cjt.deleteUsuario(getUsername());
     }
 }

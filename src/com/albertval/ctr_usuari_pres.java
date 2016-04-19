@@ -2,22 +2,44 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.Date;
 
 public class ctr_usuari_pres {
-    private String usuari = "admin";
-    private boolean privilegiat = true;
+    private String usuari;
+    private boolean privilegiat;
     private Scanner sc = new Scanner(System.in);
     private ctr_usuari_dom ctrdom = new ctr_usuari_dom();
-    private final int nusuari = 5;
+    private final int nusuari = 6;
     private final int nrel = 3;
-    public void gestio_usuari(){
-        int opcio = 0;
-        while(opcio != 8) {
-            System.out.println("0 usuari actual 1 afegir relacio 2 esborrar relacio 3 modificar usuari 4 informacio usuaris ");
-            System.out.println("5 informacio relacions de l'usuari 6 loggin 7 gestio usuari privilegiat 8 sortir");
+    public void inici(){
+        int opcio = 4;
+        while (opcio != 3){
+            System.out.println("1 crear un usuari 2 loggin 3 sortir");
             try{opcio = sc.nextInt();}
             catch (InputMismatchException e){
                 sc.next();
+                opcio = 4;
+            }
+            switch (opcio){
+                case 1: crear_usuari();
+                    break;
+                case 2: if(loggin()) gestio_usuari();
+                    break;
+                default: if(opcio != 3)System.out.println("Numero invalid");
+                    break;
+            }
+        }
+    }
+    private void gestio_usuari(){
+        int opcio = 11;
+        boolean sortir = false;
+        while((opcio != 10) && (!sortir)) {
+            System.out.println("0 usuari actual 1 afegir relacio 2 esborrar relacio 3 modificar relacio 4 modificar usuari ");
+            System.out.println("6 informacio relacions de l'usuari 7 loggin 8 borrar l'usuari 9 gestio usuari privilegiat 10 sortir");
+            try{opcio = sc.nextInt();}
+            catch (InputMismatchException e){
+                sc.next();
+                opcio = 11;
             }
             switch(opcio){
                 case 0: usuari_actual();
@@ -26,18 +48,23 @@ public class ctr_usuari_pres {
                     break;
                 case 2: esborrar_relacio();
                     break;
-                case 3: modificar_usuari(false);
+                case 3: modificar_relacio();
                     break;
-                case 4: informacio_usuaris();
+                case 4: modificar_usuari(false);
                     break;
-                case 5: informacio_relacions();
+                case 6: informacio_relacions();
                     break;
-                case 6: loggin();
+                case 7: loggin();
                     break;
-                case 7: if(!privilegiat) System.out.println("L'usuari actual no es privilegiat");
-                    else gestio_privilegiat();
+                case 8: {
+                    sortir = true;
+                    borrar_usuari_estandard();
+                }
                     break;
-                default: if(opcio != 8)System.out.println("Numero invalid");
+                case 9: if(!privilegiat) System.out.println("L'usuari actual no es privilegiat");
+                    else sortir = gestio_privilegiat();
+                    break;
+                default: if(opcio != 10)System.out.println("Numero invalid");
                     break;
             }
         }
@@ -47,21 +74,31 @@ public class ctr_usuari_pres {
         if (privilegiat)  tipus = "privilegiat";
         System.out.println(usuari+" "+tipus);
     }
-    private void gestio_privilegiat(){
-        int opcio = 1;
-        while(opcio != 4){
-            System.out.println("0 crear_usuari 1 modificar un usuari 2 esborrar un usuari 3 donar privilegis a un usuari 4 sortir");
-            opcio = sc.nextInt();
+    private boolean gestio_privilegiat(){
+        int opcio = 6;
+        boolean sortir = false;
+        while((opcio != 5) && !sortir){
+            System.out.println("0 crear_usuari 1 modificar un usuari 2 esborrar un usuari 3 donar privilegis a un usuari 4 informacio de tots el usuaris 5 sortir");
+            try{opcio = sc.nextInt();}
+            catch (InputMismatchException e){
+                sc.next();
+                opcio = 6;
+            }
             switch (opcio){
                 case 0: crear_usuari();
                     break;
                 case 1: modificar_usuari(true);
                     break;
-                case 2: borrar_usuari();
+                case 2: sortir = borrar_usuari();
                     break;
                 case 3: donar_privilegis();
+                    break;
+                case 4: informacio_usuaris();
+                    break;
+                default: if(opcio != 5) System.out.println("Numero invalid");
             }
         }
+        return sortir;
     }
     private void crear_usuari(){
         System.out.println("privilegiat per crear un usuari privilegiat o qualsevol altre cosa per crear-ne un estandard");
@@ -80,9 +117,26 @@ public class ctr_usuari_pres {
         String nomR = sc.next();
         System.out.print("Escriu el path: ");
         String path = sc.next();
-        System.out.print("Escriu la descripcio sense espais: ");
-        String descripcio = sc.next();
+        sc.nextLine();
+        System.out.print("Escriu la descripcio o null: ");
+        String descripcio = sc.nextLine();
+        if(descripcio.equals("null")) descripcio = null;
         if(ctrdom.afegir_relacio(nomR, path, descripcio)) System.out.println("Relacio afegida");
+    }
+    private void modificar_relacio(){
+        System.out.print("Escriu el nom antic: ");
+        String nomAntic = sc.next();
+        System.out.print("Escriu el nom nou o null: ");
+        String nomNou = sc.next();
+        if(nomNou.equals("null")) nomNou = null;
+        System.out.print("Escriu la descripcio o null: ");
+        String descripcio = sc.next();
+        if(descripcio.equals("null")) descripcio = null;
+        if((nomNou == null) && (descripcio == null)) System.out.println("Res a modificar");
+        else {
+            if (ctrdom.modificar_relacio(nomAntic, nomNou, descripcio)) System.out.println("Relacio modificada");
+            else System.out.println("La relacio no existia");
+        }
     }
     private void esborrar_relacio(){
         System.out.print("Escriu la relacio a esborrar: ");
@@ -112,11 +166,16 @@ public class ctr_usuari_pres {
         if(sexe.equals("null")) sexe = null;
         System.out.print("Escriu la data en format dd/mm/aaaa o null:");
         String data = sc.next();
-        if(ctrdom.modificar_usuari(username, oldPass, pass, nom, sexe, data, esPrivilegiat)) System.out.println("Usuari modificat");
-        else{
-            if(esPrivilegiat) System.out.println("L'usuari no existeix");
-            else System.out.println("Contrasenya incorrecte");
+        Date date = transformar_data.stringToDate(data);
+        if((pass!= null) ||(nom!=null) || (sexe!=null) || (date != null)) {
+            if (ctrdom.modificar_usuari(username, oldPass, pass, nom, sexe, date, esPrivilegiat))
+                System.out.println("Usuari modificat");
+            else {
+                if (esPrivilegiat) System.out.println("L'usuari no existeix");
+                else System.out.println("Contrasenya incorrecte");
+            }
         }
+        else System.out.println("Res a modificar");
     }
     private void informacio_usuaris(){
         ArrayList<ArrayList<String>> usuaris = ctrdom.informacio_usuaris();
@@ -140,30 +199,37 @@ public class ctr_usuari_pres {
             System.out.println();
         }
     }
-    private void loggin(){
+    private boolean loggin(){
         System.out.print("Introdueix el nom de l'usuari: ");
         String nom = sc.next();
         System.out.print("Introdueix el nom la contrasenya: ");
         String pass = sc.next();
         String res = ctrdom.loggin(nom, pass);
-        if(res == "0") System.out.println("Usuari o contrasenya incorrectes");
-        else{
-            usuari = nom;
-            if(res.equals("usuari_privilegiat"))privilegiat = true;
-            else privilegiat = false;
-            System.out.println("Loggin com "+nom+" "+res);
+        if(res == "0") {
+            System.out.println("Usuari o contrasenya incorrectes");
+            return false;
         }
+        usuari = nom;
+        if(res.equals("usuari_privilegiat"))privilegiat = true;
+        else privilegiat = false;
+        System.out.println("Loggin com "+nom+" "+res);
+        return true;
     }
-    private void borrar_usuari(){
+    private void borrar_usuari_estandard(){
+        ctrdom.borrar_usuari_estandard();
+    }
+    private boolean borrar_usuari(){
         System.out.print("Escriu l'usuari a esborrar: ");
         String usuari_a_borrar = sc.next();
         if(ctrdom.borrar_usuari(usuari_a_borrar)) System.out.println("Usuari borrat");
         else System.out.println("L'usuari no existia");
+        if(usuari.equals(usuari_a_borrar)) return true;
+        return false;
     }
     private void donar_privilegis(){
         System.out.print("Escriu l'usuari: ");
         String username = sc.next();
         if(ctrdom.donar_privilegis(username)) System.out.println("L'usuari "+username+" ara es privilegiat");
-        else System.out.println("L'usuari no existia");
+        else System.out.println("L'usuari no existia o ja era privilegiat");
     }
 }
