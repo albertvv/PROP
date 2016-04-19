@@ -1,10 +1,14 @@
 import org.la4j.matrix.SparseMatrix;
+import org.la4j.matrix.ColumnMajorSparseMatrix;
+import org.la4j.matrix.sparse.CCSMatrix;
 import org.la4j.vector.SparseVector;
 import org.la4j.vector.sparse.CompressedVector;
 
+//import Entidad; ???
+
 import java.util.Vector;
 
-public class Grafo {
+public class grafo {
 
     //ATRIBUTS
 	/*Vectors d'entitats*/
@@ -21,15 +25,15 @@ public class Grafo {
 
 
     //CONSTRUCTORA
-    public Grafo() {
+    public grafo() {
         vectorAutor 			= new Vector<Autor>();
         vectorConferencia		= new Vector<Conferencia>();
         vectorTermino 			= new Vector<Termino>();
         vectorArticulo 			= new Vector<Articulo>();
 
-        matrizPaperAutor 		= new SparseMatrix();
-        matrizPaperConferencia  = new SparseMatrix();
-        matrizPaperTermino 		= new SparseMatrix();
+        matrizPaperAutor 		= new CCSMatrix();
+        matrizPaperConferencia  = new CCSMatrix();
+        matrizPaperTermino 		= new CCSMatrix();
 
         lastId = -1;
     }
@@ -39,58 +43,61 @@ public class Grafo {
 
     /*Aquest mètode ara és privat (no té sentit que sigui públic)*/
     private int getIndice(String nombre, String tipo) {
+        int n;
         switch (tipo) {
             case "Articulo":
-                int n = vectorArticulo.size();
+                n = vectorArticulo.size();
                 for (int i = 0; i < n; ++n)
                     if (vectorArticulo.get(i).getNombre().equals(nombre)) return i;
             case "Autor":
-                int n = vectorAutor.size();
+                n = vectorAutor.size();
                 for (int i = 0; i < n; ++n)
                     if (vectorAutor.get(i).getNombre().equals(nombre)) return i;
             case "Conferencia":
-                int n = vectorConferencia.size();
+                n = vectorConferencia.size();
                 for (int i = 0; i < n; ++n)
                     if (vectorConferencia.get(i).getNombre().equals(nombre)) return i;
             case "Termino":
-                int n = vectorTermino.size();
+                n = vectorTermino.size();
                 for (int i = 0; i < n; ++n)
                     if (vectorTermino.get(i).getNombre().equals(nombre)) return i;
             default:
-                System.out.println("Capsigrany! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino")
+                System.out.println("Capsigrany! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
                 return NULL;
         }
     }
 
     public void addEntidad(String nombre, String tipoEntidad) {
+        Integer index = getIndice(nombre, tipoEntidad);
+        Vector<Double> tmpVec1, tmpVec2, tmpVec3;
         switch (tipoEntidad) {
             case "Articulo":
                 Articulo tmpArticulo = new Articulo(getIndice(++lastId, nombre));
                 vectorArticulo.addElement(index, tmpArticulo);
-                SparseVector tmpVec1 = new CompressedVector(vectorAutor.size());
+                tmpVec1 = new Vector(vectorAutor.size());
                 matrizPaperAutor.insertRow(vectorArticulo.size()-1, tmpVec1);
-                SparseVector tmpVec2 = new CompressedVector(vectorConferencia.size());
+                tmpVec2 = new Vector(vectorConferencia.size());
                 matrizPaperConferencia.insertRow(vectorArticulo.size()-1, tmpVec2);
-                SparseVector tmpVec3 = new CompressedVector(vectorArticulo.size());
+                tmpVec3 = new Vector(vectorArticulo.size());
                 matrizPaperTermino.insertRow(vectorArticulo.size()-1, tmpVec3);
                 break;
             case "Autor":
                 Autor tmpAutor = new Autor(++lastId, nombre);
                 vectorAutor.addElement(index, tmpAutor);
-                Vector<Double> tmpVec = new Vector<Double>();
-                matrizPaperAutor.insertColumn(vectorAutor.size()-1, tmpVec);
+                tmpVec1 = new Vector<Double>();
+                matrizPaperAutor.insertColumn(vectorAutor.size()-1, tmpVec1);
                 break;
             case "Conferencia":
                 Conferencia tmpConferencia = new Conferencia(++lastId, nombre);
                 vectorConferencia.addElement(index, tmpConferencia);
-                Vector<double> tmpVec = new Vector<double>();
-                matrizPaperConferencia.insertColumn(vectorAutor.size()-1, tmpVec);
+                tmpVec1 = new Vector<Double>();
+                matrizPaperConferencia.insertColumn(vectorAutor.size()-1, tmpVec1);
                 break;
             case "Termino":
                 Termino tmpTermino = new Termino(++lastId, nombre);
                 vectorTermino.addElement(tmpTermino);
-                Vector<double> tmpVec = new Vector<double>();
-                matrizPaperTermino.insertColumn(vectorAutor.size()-1, tmpVec);
+                tmpVec1 = new Vector<Double>();
+                matrizPaperTermino.insertColumn(vectorAutor.size()-1, tmpVec1);
                 break;
             default:
                 System.out.println("Tros d'ase! Cal triar un tipus d'entitat valid");
@@ -133,17 +140,21 @@ public class Grafo {
     }
 
     public void addRelacion(String nombre1, String nombre2, String tipoRelacion) {
+        Integer index1, index2;
         switch (tipoRelacion) {
             case "AP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Autor");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Autor");
                 matrizPaperAutor.set(index1, index2, 1);
                 break;
             case "CP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Conferencia");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Conferencia");
                 matrizPaperConferencia.set(index1, index2, 1);
                 break;
             case "TP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Termino");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Termino");
                 matrizPaperTermino.set(index1, index2, 1);
                 break;
             default:
@@ -153,17 +164,21 @@ public class Grafo {
     }
 
     public void deleteRelacion(String nombreOrigen, String nombreDesti, String tipoRelacion) {
+        Integer index1, index2;
         switch (tipoRelacion) {
             case "AP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Autor");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Autor");
                 matrizPaperAutor.set(index1, index2, 0);
                 break;
             case "CP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Conferencia");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Conferencia");
                 matrizPaperConferencia.set(index1, index2, 0);
                 break;
             case "TP":
-                Integer index1 = getIndice(nombre1, "Articulo"), index2 = getIndice(nombre2, "Termino");
+                index1 = getIndice(nombre1, "Articulo");
+                index2 = getIndice(nombre2, "Termino");
                 matrizPaperTermino.set(index1, index2, 0);
                 break;
             default:
@@ -252,7 +267,7 @@ public class Grafo {
         }
     }
     //funcions que m'ha demanat l'Albert
-    public String getId(String nom, String tipusEntitat) {
+    public Integer getId(String nom, String tipusEntitat) {
         //
         return NULL;
     }
