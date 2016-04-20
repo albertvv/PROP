@@ -2,9 +2,15 @@ import java.util.*;
 
 public class ctr_usuari_dom {
     private Scanner sc = new Scanner(System.in);
-    private ConjuntoUsuarios<usuari_estandard> cjt = new ConjuntoUsuarios<usuari_estandard>();
+    private ConjuntoUsuarios<usuari_estandard> cjt;
     private usuari_estandard user;
-
+    private grafo graf;
+    public void carregar_cjt_usuaris(ConjuntoUsuarios cjt){
+        this.cjt = cjt;
+    }
+    public void carregar_graf(grafo graf){
+        this.graf = graf;
+    }
     public boolean crear_usuari(String username, String pass, boolean privilegiat){
         usuari_estandard user;
         if(privilegiat) user = new usuari_privilegiat(username, pass);
@@ -90,5 +96,26 @@ public class ctr_usuari_dom {
     }
     private boolean aux_donar_privilegis(usuari_privilegiat user, String username){
         return user.donar_privilegis(username, cjt);
+    }
+    public boolean afegir_element(String nom, String tipus){
+        return graf.addEntidad(nom, tipus);
+    }
+    public boolean afegir_relacio_graf(String primer, String segon, String tipus){return graf.addRelacion(primer,segon,tipus);}
+    public boolean esborrar_element(String nom, String tipus){return graf.deleteEntidad(nom, tipus);}
+    public boolean esborrar_relacio_graf(String primer, String segon, String tipus){return graf.deleteRelacion(primer, segon, tipus);}
+    public ArrayList<ArrayList<String>> relacions_directes(String nom, String tipus){
+        Vector<Entidad> vector = graf.getRelacion(nom, tipus);
+        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+        Iterator it = vector.iterator();
+        Entidad eaux;
+        while(it.hasNext()){
+            eaux = (Entidad)it.next();
+            ArrayList<String> aaux = new ArrayList<String>(3);
+            aaux.add(Integer.toString(eaux.getId()));
+            aaux.add(eaux.getNombre());
+            aaux.add(eaux.getEtiq());
+            result.add(aaux);
+        }
+        return result;
     }
 }

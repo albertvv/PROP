@@ -1,20 +1,23 @@
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.Date;
 
 public class ctr_usuari_pres {
     private String usuari;
     private boolean privilegiat;
     private Scanner sc = new Scanner(System.in);
-    private ctr_usuari_dom ctrdom = new ctr_usuari_dom();
+    private ctr_usuari_dom ctrdom;
     private final int nusuari = 6;
     private final int nrel = 3;
+    private final int nreldir = 3;
+    public void carregar_ctr_usuari_dom(ctr_usuari_dom ctr){
+        ctrdom = ctr;
+    }
     public void inici(){
-        int opcio = 4;
-        while (opcio != 3){
-            System.out.println("1 crear un usuari 2 loggin 3 sortir");
+        int opcio = 6;
+        while (opcio != 5){
+            System.out.println("1 crear un usuari 2 loggin 3 importar dades 4 guardar 5 sortir");
             try{opcio = sc.nextInt();}
             catch (InputMismatchException e){
                 sc.next();
@@ -25,7 +28,11 @@ public class ctr_usuari_pres {
                     break;
                 case 2: if(loggin()) gestio_usuari();
                     break;
-                default: if(opcio != 3)System.out.println("Numero invalid");
+                case 3: importar_usuaris();
+                    break;
+                case 4: guardar_usuaris();
+                    break;
+                default: if(opcio != 5)System.out.println("Numero invalid");
                     break;
             }
         }
@@ -34,7 +41,7 @@ public class ctr_usuari_pres {
         int opcio = 11;
         boolean sortir = false;
         while((opcio != 10) && (!sortir)) {
-            System.out.println("0 usuari actual 1 afegir relacio 2 esborrar relacio 3 modificar relacio 4 modificar usuari ");
+            System.out.println("0 usuari actual 1 afegir relacio 2 esborrar relacio 3 modificar relacio 4 modificar usuari 5 gestio del graf ");
             System.out.println("6 informacio relacions de l'usuari 7 loggin 8 borrar l'usuari 9 gestio usuari privilegiat 10 sortir");
             try{opcio = sc.nextInt();}
             catch (InputMismatchException e){
@@ -51,6 +58,8 @@ public class ctr_usuari_pres {
                 case 3: modificar_relacio();
                     break;
                 case 4: modificar_usuari(false);
+                    break;
+                case 5: gestio_graf();
                     break;
                 case 6: informacio_relacions();
                     break;
@@ -73,6 +82,36 @@ public class ctr_usuari_pres {
         String tipus = "estandard";
         if (privilegiat)  tipus = "privilegiat";
         System.out.println(usuari+" "+tipus);
+    }
+    private void gestio_graf(){
+        int opcio = 9;
+        while(opcio != 8) {
+            System.out.println("1 Importar 2 afegir elements 3 afegir relacions 4 esborrar elements 5 esborrar relacions 6 consultar relacions directes 7 guardar 8 sortir");
+            try {
+                opcio = sc.nextInt();
+            } catch (InputMismatchException e) {
+                sc.next();
+                opcio = 9;
+            }
+            switch (opcio){
+                case 1: importar_graf();
+                    break;
+                case 2: afegir_element();
+                    break;
+                case 3: afegir_relacio_graf();
+                    break;
+                case 4: esborrar_element();
+                    break;
+                case 5: esborrar_relacio_graf();
+                    break;
+                case 6: consultar_relacions_directes();
+                    break;
+                case 7: guardar_graf();
+                    break;
+                default: if(opcio != 8) System.out.println("Numero incorrecte");
+                    break;
+            }
+        }
     }
     private boolean gestio_privilegiat(){
         int opcio = 6;
@@ -231,5 +270,83 @@ public class ctr_usuari_pres {
         String username = sc.next();
         if(ctrdom.donar_privilegis(username)) System.out.println("L'usuari "+username+" ara es privilegiat");
         else System.out.println("L'usuari no existia o ja era privilegiat");
+    }
+    private void importar_usuaris(){}
+    private void guardar_usuaris(){}
+    private void importar_graf(){}
+    private void guardar_graf(){}
+    private boolean comprovar_tipus_element(String tipus){return (tipus.equals("Articulo")) || (tipus.equals("Autor")) || (tipus.equals("Conferencia")) || (tipus.equals("Termino"));}
+    private boolean comprovar_tipus_relacio(String tipus){
+        return (tipus.equals("AP")) || (tipus.equals("TP")) || (tipus.equals("CP"));
+    }
+    private boolean entrada_element(String nom, String tipus){
+        System.out.print("Escriu el nom: ");
+        nom = sc.next();
+        System.out.print("Escriu el tipus(Articulo|Autor|Conferencia|Termino): ");
+        tipus = sc.next();
+        if(comprovar_tipus_element(tipus)) return true;
+        System.out.println("Tipus incorrecte");
+        return false;
+
+    }
+    private boolean entrada_relacio(String element1, String element2, String tipus){
+        System.out.print("Escriu el nom del primer element(no pot ser un paper): ");
+        element1 = sc.next();
+        System.out.print("Escriu el nom del segon element(ha de ser un paper): ");
+        element2 = sc.next();
+        System.out.print("Escriu el tipus de relacio(AP|TP|CP)");
+        tipus = sc.next();
+        if(comprovar_tipus_relacio(tipus)) return true;
+        System.out.println("Tipus incorrecte");
+        return false;
+    }
+    private void afegir_element(){
+        String nom = " ";
+        String tipus = " ";
+        if(entrada_element(nom, tipus)) {
+            if (ctrdom.afegir_element(nom, tipus)) System.out.println("Element afegit");
+            else System.out.println("L'element ja hi era");
+        }
+    }
+    private void afegir_relacio_graf(){
+        String element1 = " ";
+        String element2 = " ";
+        String tipus = " ";
+        if(entrada_relacio(element1, element2, tipus)) {
+            if(ctrdom.afegir_relacio_graf(element1, element2, tipus)) System.out.println("Relacio afegida");
+            else System.out.println("La relacio ja existia o un dels elements no existeix");
+        }
+    }
+    private void esborrar_element(){
+        String nom = " ";
+        String tipus = " ";
+        if(entrada_element(nom, tipus)){
+            if(ctrdom.esborrar_element(nom, tipus)) System.out.println("Element esborrat");
+            else System.out.println("L'element no existia");
+        }
+    }
+    private void esborrar_relacio_graf(){
+        String element1 = " ";
+        String element2 = " ";
+        String tipus = " ";
+        if(entrada_relacio(element1,element2,tipus)){
+            if(ctrdom.esborrar_relacio_graf(element1, element2,tipus)) System.out.println("Relacio esborrada");
+            else System.out.println("La relacio no existia");
+        }
+    }
+    private void consultar_relacions_directes(){
+        String nom = " ";
+        String tipus = " ";
+        if(entrada_element(nom, tipus)){
+            ArrayList<ArrayList<String>> relacions_directes = ctrdom.relacions_directes(nom, tipus);
+            ArrayList<String> aux;
+            for(int i = 0;i < relacions_directes.size(); ++i) {
+                aux = relacions_directes.get(i);
+                for(int j = 0;j < nreldir; ++j) {
+                    System.out.print(aux.get(j) + " ");
+                }
+                System.out.println();
+            }
+        }
     }
 }
