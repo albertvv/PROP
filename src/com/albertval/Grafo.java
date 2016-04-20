@@ -24,27 +24,28 @@ public class Grafo {
 
     //ATRIBUTS
 
-	/*Vectors d'entitats*/
-    private Vector<Articulo>	vectorArticulo;
+    /*Vectors d'entitats*/
+    private Vector<Paper>	    vectorPaper;
     private Vector<Autor>		vectorAutor;
     private Vector<Conferencia>	vectorConferencia;
     private Vector<Termino>		vectorTermino;
 
     /*Matrius d'adjacencia*/
-    private SparseMatrix    matrizPaperAutor;
-    private SparseMatrix	matrizPaperConferencia;
-    private SparseMatrix	matrizPaperTermino;
+    private SparseMatrix        matrizPaperAutor;
+    private SparseMatrix	    matrizPaperConferencia;
+    private SparseMatrix	    matrizPaperTermino;
 
     /*Darrera ID emprada*/
     private Integer lastId;
 
 
     //CONSTRUCTORA
+
     public Grafo() {
         vectorAutor 			= new Vector<Autor>();
         vectorConferencia		= new Vector<Conferencia>();
         vectorTermino 			= new Vector<Termino>();
-        vectorArticulo 			= new Vector<Articulo>();
+        vectorPaper 			= new Vector<Paper>();
 
         matrizPaperAutor 		= new CCSMatrix();
         matrizPaperConferencia  = new CCSMatrix();
@@ -53,66 +54,159 @@ public class Grafo {
         lastId = -1;
     }
 
+
     //METODES PRIVATS
 
     /*Pre: */
     /*Post: si existeix alguna entitat amb Nombre=nom al graf, retorna l'index corresponent a la seva primera
-     *      aparicio, i repeticions es igual al nombre d'aparicions. Si no n'existeix cap retorna -1 i pos
-     *      conte la posicio que hauria d'ocupar*/
+     *      aparicio, i repeticions es igual al nombre de vegades que hi apareix. Si no n'existeix cap retorna -1
+     *      i pos conte la posicio que hauria d'ocupar */
     private int cercaDicotomica(String nom, String tipoEntidad, Integer repeticions, Integer pos) {
-        int n = -1, rep = 0, l = 0, r, m;
+        int n = -1, l = 0, r, m = 0;
+        boolean found = false;
         switch (tipoEntidad) {
-            case "Articulo":
+            case "Paper":
+                r = vectorPaper.size()-1;
+                while (l <= r && !found) {
+                    m = (l+r)/2;
+                    if (nom.compareTo(vectorPaper.get(m).getNombre()) < 0) r = m - 1;
+                    else if (nom.compareTo(vectorPaper.get(m).getNombre()) > 0) r = m + 1;
+                    else {
+                        found = true;
+                        n = m;
+                        repeticions = 1;
+                        while (m < vectorPaper.size() && (vectorPaper.get(++m).getNombre()).equals(nom))
+                            ++repeticions;
+                        m = n;
+                        while (m >= 0 && (vectorPaper.get(++m).getNombre()).equals(nom)) {
+                            ++repeticions;
+                            --n;
+                        }
+                    }
+                }
+                if (!found) {
+                    pos = m;
+                    if (pos < 0) pos = 0;
+                    else if (pos >= vectorPaper.size()) pos = vectorPaper.size();
+                }
                 break;
             case "Autor":
-                break;
+                r = vectorAutor.size()-1;
+                while (l <= r && !found) {
+                    m = (l+r)/2;
+                    if (nom.compareTo(vectorAutor.get(m).getNombre()) < 0) r = m - 1;
+                    else if (nom.compareTo(vectorAutor.get(m).getNombre()) > 0) r = m + 1;
+                    else {
+                        found = true;
+                        n = m;
+                        repeticions = 1;
+                        while (m < vectorAutor.size() && (vectorAutor.get(++m).getNombre()).equals(nom))
+                            ++repeticions;
+                        m = n;
+                        while (m >= 0 && (vectorAutor.get(++m).getNombre()).equals(nom)) {
+                            ++repeticions;
+                            --n;
+                        }
+                    }
+                }
+                if (!found) {
+                    pos = m;
+                    if (pos < 0) pos = 0;
+                    else if (pos >= vectorAutor.size()) pos = vectorAutor.size();
+                }
             case "Conferencia":
-                break;
+                r = vectorConferencia.size()-1;
+                while (l <= r && !found) {
+                    m = (l+r)/2;
+                    if (nom.compareTo(vectorConferencia.get(m).getNombre()) < 0) r = m - 1;
+                    else if (nom.compareTo(vectorConferencia.get(m).getNombre()) > 0) r = m + 1;
+                    else {
+                        found = true;
+                        n = m;
+                        repeticions = 1;
+                        while (m < vectorConferencia.size() && (vectorConferencia.get(++m).getNombre()).equals(nom))
+                            ++repeticions;
+                        m = n;
+                        while (m >= 0 && (vectorConferencia.get(++m).getNombre()).equals(nom)) {
+                            ++repeticions;
+                            --n;
+                        }
+                    }
+                }
+                if (!found) {
+                    pos = m;
+                    if (pos < 0) pos = 0;
+                    else if (pos >= vectorConferencia.size()) pos = vectorConferencia.size();
+                }
             case "Termino":
-                break;
+                r = vectorTermino.size()-1;
+                while (l <= r && !found) {
+                    m = (l+r)/2;
+                    if (nom.compareTo(vectorTermino.get(m).getNombre()) < 0) r = m - 1;
+                    else if (nom.compareTo(vectorTermino.get(m).getNombre()) > 0) r = m + 1;
+                    else {
+                        found = true;
+                        n = m;
+                        repeticions = 1;
+                        while (m < vectorTermino.size() && (vectorTermino.get(++m).getNombre()).equals(nom))
+                            ++repeticions;
+                        m = n;
+                        while (m >= 0 && (vectorTermino.get(++m).getNombre()).equals(nom)) {
+                            ++repeticions;
+                            --n;
+                        }
+                    }
+                }
+                if (!found) {
+                    pos = m;
+                    if (pos < 0) pos = 0;
+                    else if (pos >= vectorTermino.size()) pos = vectorTermino.size();
+                }
             default:
-                System.out.println("Carallot! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
+                System.out.println("Carallot! El tipus d'entitat ha de ser Paper, Autor, Conferencia o Termino");
                 break;
         }
         return n;
     }
 
-    private int getIndice(String nombre, String tipo) { return cercaDicotomica(nombre, tipo, null, null); } //redundant
-
 
     //METODES PUBLICS (It's free!)
 
+    /* redundant. necessaria? */
+    public int getIndice(String nombre, String tipo) { return cercaDicotomica(nombre, tipo, null, null); }
+
     public void addEntidad(String nombre, String tipoEntidad) {
-        Integer index = getIndice(nombre, tipoEntidad);
+        Integer index = new Integer();
+        cercaDicotomica(nombre, tipoEntidad, null, index);
         org.la4j.Vector tmpVec1, tmpVec2, tmpVec3;
         switch (tipoEntidad) {
-            case "Articulo":
-                Articulo tmpArticulo = new Articulo(++lastId, nombre);
-                vectorArticulo.add(index, tmpArticulo);
+            case "Paper":
+                Paper tmpPaper = new Paper(++lastId, nombre);
+                vectorPaper.add(index, tmpPaper);
                 tmpVec1 = new CompressedVector(vectorAutor.size());
                 tmpVec2 = new CompressedVector(vectorConferencia.size());
-                tmpVec3 = new CompressedVector(vectorArticulo.size());
-                matrizPaperAutor.insertRow(vectorArticulo.size(), tmpVec1);
-                matrizPaperConferencia.insertRow(vectorArticulo.size(), tmpVec2);
-                matrizPaperTermino.insertRow(vectorArticulo.size(), tmpVec3);
+                tmpVec3 = new CompressedVector(vectorPaper.size());
+                matrizPaperAutor.insertRow(index, tmpVec1);
+                matrizPaperConferencia.insertRow(index, tmpVec2);
+                matrizPaperTermino.insertRow(index, tmpVec3);
                 break;
             case "Autor":
                 Autor tmpAutor = new Autor(++lastId, nombre);
                 vectorAutor.add(index, tmpAutor);
                 tmpVec1 = new CompressedVector();
-                matrizPaperAutor.insertColumn(vectorAutor.size(), tmpVec1);
+                matrizPaperAutor.insertColumn(index, tmpVec1);
                 break;
             case "Conferencia":
                 Conferencia tmpConferencia = new Conferencia(++lastId, nombre);
                 vectorConferencia.add(index, tmpConferencia);
                 tmpVec1 = new CompressedVector();
-                matrizPaperConferencia.insertColumn(vectorAutor.size(), tmpVec1);
+                matrizPaperConferencia.insertColumn(index, tmpVec1);
                 break;
             case "Termino":
                 Termino tmpTermino = new Termino(++lastId, nombre);
                 vectorTermino.add(index, tmpTermino);
                 tmpVec1 = new CompressedVector();
-                matrizPaperTermino.insertColumn(vectorAutor.size(), tmpVec1);
+                matrizPaperTermino.insertColumn(index, tmpVec1);
                 break;
             default:
                 System.out.println("Tros d'ase! Cal triar un tipus d'entitat valid");
@@ -123,9 +217,9 @@ public class Grafo {
     public void deleteEntidad(String nombre, String tipoEntidad) {
         int i;
         switch (tipoEntidad) {
-            case "Articulo":
-                i = getIndice(nombre, "Articulo");
-                vectorArticulo.remove(i);
+            case "Paper":
+                i = getIndice(nombre, "Paper");
+                vectorPaper.remove(i);
                 matrizPaperAutor.removeRow(i);
                 matrizPaperConferencia.removeRow(i);
                 matrizPaperTermino.removeRow(i);
@@ -159,18 +253,33 @@ public class Grafo {
         Integer index1, index2;
         switch (tipoRelacion) {
             case "AP":
-                index1 = getIndice(nombre1, "Articulo");
-                index2 = getIndice(nombre2, "Autor");
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Autor", null, null);
                 matrizPaperAutor.set(index1, index2, 1);
                 break;
             case "CP":
-                index1 = getIndice(nombre1, "Articulo");
-                index2 = getIndice(nombre2, "Conferencia");
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Conferencia", null, null);
                 matrizPaperConferencia.set(index1, index2, 1);
                 break;
             case "TP":
-                index1 = getIndice(nombre1, "Articulo");
-                index2 = getIndice(nombre2, "Termino");
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Termino", null, null);
+                matrizPaperTermino.set(index1, index2, 1);
+                break;
+			case "PA":
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Autor", null, null);
+                matrizPaperAutor.set(index1, index2, 1);
+                break;
+            case "PC":
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Conferencia", null, null);
+                matrizPaperConferencia.set(index1, index2, 1);
+                break;
+            case "PT":
+                index1 = cercaDicotomica(nombre1, "Paper", null, null);
+                index2 = cercaDicotomica(nombre2, "Termino", null, null);
                 matrizPaperTermino.set(index1, index2, 1);
                 break;
             default:
@@ -183,17 +292,32 @@ public class Grafo {
         Integer index1, index2;
         switch (tipoRelacion) {
             case "AP":
-                index1 = getIndice(nombreOrigen, "Articulo");
+                index1 = getIndice(nombreOrigen, "Paper");
                 index2 = getIndice(nombreDesti, "Autor");
                 matrizPaperAutor.set(index1, index2, 0);
                 break;
             case "CP":
-                index1 = getIndice(nombreOrigen, "Articulo");
+                index1 = getIndice(nombreOrigen, "Paper");
                 index2 = getIndice(nombreDesti, "Conferencia");
                 matrizPaperConferencia.set(index1, index2, 0);
                 break;
             case "TP":
-                index1 = getIndice(nombreOrigen, "Articulo");
+                index1 = getIndice(nombreOrigen, "Paper");
+                index2 = getIndice(nombreDesti, "Termino");
+                matrizPaperTermino.set(index1, index2, 0);
+                break;
+			case "PA":
+                index1 = getIndice(nombreOrigen, "Paper");
+                index2 = getIndice(nombreDesti, "Autor");
+                matrizPaperAutor.set(index1, index2, 0);
+                break;
+            case "PC":
+                index1 = getIndice(nombreOrigen, "Paper");
+                index2 = getIndice(nombreDesti, "Conferencia");
+                matrizPaperConferencia.set(index1, index2, 0);
+                break;
+            case "PT":
+                index1 = getIndice(nombreOrigen, "Paper");
                 index2 = getIndice(nombreDesti, "Termino");
                 matrizPaperTermino.set(index1, index2, 0);
                 break;
@@ -207,8 +331,8 @@ public class Grafo {
         Vector<Entidad> vR = new Vector<Entidad>();
         int i, j, n;
         switch (tipoEntidad) {
-            case "Articulo":
-                i = getIndice(nombre, "Articulo");
+            case "Paper":
+                i = getIndice(nombre, "Paper");
                 //autors:
                 n = vectorAutor.size();
                 for (j = 0; j < n; ++j)
@@ -224,19 +348,19 @@ public class Grafo {
                 return vR;
             case "Autor":
                 j = getIndice(nombre, "Autor");
-                n = vectorArticulo.size();
+                n = vectorPaper.size();
                 for (i = 0; i < n; ++i)
-                    if (!matrizPaperAutor.isZeroAt(i, j)) vR.addElement(vectorArticulo.elementAt(i));
+                    if (!matrizPaperAutor.isZeroAt(i, j)) vR.addElement(vectorPaper.elementAt(i));
                 return vR;
             case "Conferencia":
                 j = getIndice(nombre, "Conferencia");
-                n = vectorArticulo.size();
+                n = vectorPaper.size();
                 for (i = 0; i < n; ++i)
                     if (!matrizPaperConferencia.isZeroAt(i, j)) vR.addElement(vectorConferencia.elementAt(i));
                 return vR;
             case "Termino":
                 j = getIndice(nombre, "Termino");
-                n = vectorArticulo.size();
+                n = vectorPaper.size();
                 for (i = 0; i < n; ++i)
                     if (!matrizPaperTermino.isZeroAt(i, j)) vR.addElement(vectorTermino.elementAt(i));
                 return vR;
@@ -248,8 +372,8 @@ public class Grafo {
 
     public Entidad getEntidad(String nombre, String tipoEntidad) {
         switch (tipoEntidad) {
-            case "Articulo":
-                return vectorArticulo.get(getIndice(nombre, "Articulo"));
+            case "Paper":
+                return vectorPaper.get(getIndice(nombre, "Paper"));
             case "Autor":
                 return vectorAutor.get(getIndice(nombre, "Autor"));
             case "Conferencia":
@@ -283,8 +407,8 @@ public class Grafo {
         Integer i = cercaDicotomica(nom, tipusEntitat, null, null);
         if (!i.equals(-1)) {
             switch (tipusEntitat) {
-                case "Articulo":
-                    return vectorArticulo.get(i).getId();
+                case "Paper":
+                    return vectorPaper.get(i).getId();
                 case "Autor":
                     return vectorAutor.get(i).getId();
                 case "Conferencia":
@@ -295,26 +419,9 @@ public class Grafo {
         }
         return null;
     }
-/*
-    public String getNombre(Integer id, String tipusEntitat) {
-        //cerca per id
-        if (!i.equals(-1)) {
-            switch (tipusEntitat) {
-                case "Articulo":
-                    return vectorArticulo.get(i).getNombre();
-                case "Autor":
-                    return vectorAutor.get(i).getNombre();
-                case "Conferencia":
-                    return vectorConferencia.get(i).getNombre();
-                case "Termino":
-                    return vectorTermino.get(i).getNombre();
-            }
-        }
-        return null;
-    }
-*/
+
     /*  xorrades que vol l'Alvar:   */
-    public Vector<Articulo> getArticulos() { return vectorArticulo; }
+    public Vector<Paper> getPapers() { return vectorPaper; }
 
     public Vector<Autor> getAutors() { return vectorAutor; }
 
@@ -322,50 +429,58 @@ public class Grafo {
 
     public Vector<Termino> getTerminos() { return vectorTermino; }
 
-    public void addArticulo(Articulo a) {
+    public void addPaper(Paper a) {
+        Integer i = new Integer();
+        cercaDicotomica(a.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec1, tmpVec2, tmpVec3;
         tmpVec1 = new CompressedVector(vectorAutor.size());
         tmpVec2 = new CompressedVector(vectorConferencia.size());
         tmpVec3 = new CompressedVector(vectorTermino.size());
-        matrizPaperAutor.insertRow(vectorArticulo.size(), tmpVec1);
-        matrizPaperConferencia.insertRow(vectorArticulo.size(), tmpVec2);
-        matrizPaperTermino.insertRow(vectorArticulo.size(), tmpVec3);
+        matrizPaperAutor.insertRow(i, tmpVec1);
+        matrizPaperConferencia.insertRow(i, tmpVec2);
+        matrizPaperTermino.insertRow(i, tmpVec3);
         //vector
-        vectorArticulo.addElement(a);
+        vectorPaper.add(i, a);
         //lastId
         if (lastId < a.getId()) lastId = a.getId();
     }
 
     public void addAutor(Autor a) {
+        Integer i = new Integer();
+        cercaDicotomica(a.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
-        tmpVec = new CompressedVector(vectorArticulo.size());
-        matrizPaperAutor.insertColumn(vectorAutor.size(), tmpVec);
+        tmpVec = new CompressedVector(vectorPaper.size());
+        matrizPaperAutor.insertColumn(i, tmpVec);
         //vector
-        vectorAutor.addElement(a);
+        vectorAutor.add(i, a);
         //lastId
         if (lastId < a.getId()) lastId = a.getId();
     }
 
     public void addConferencia(Conferencia c) {
+        Integer i = new Integer();
+        cercaDicotomica(c.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
-        tmpVec = new CompressedVector(vectorArticulo.size());
-        matrizPaperConferencia.insertColumn(vectorConferencia.size(), tmpVec);
+        tmpVec = new CompressedVector(vectorPaper.size());
+        matrizPaperConferencia.insertColumn(i, tmpVec);
         //vector
-        vectorConferencia.addElement(c);
+        vectorConferencia.add(i, c);
         //lastId
         if (lastId < c.getId()) lastId = c.getId();
     }
 
     public void addTermino(Termino t) {
+        Integer i = new Integer();
+        cercaDicotomica(t.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
-        tmpVec = new CompressedVector(vectorArticulo.size());
-        matrizPaperTermino.insertColumn(vectorTermino.size(), tmpVec);
+        tmpVec = new CompressedVector(vectorPaper.size());
+        matrizPaperTermino.insertColumn(i, tmpVec);
         //vector
-        vectorTermino.addElement(t);
+        vectorTermino.add(i,t);
         //lastId
         if (lastId < t.getId()) lastId = t.getId();
     }
