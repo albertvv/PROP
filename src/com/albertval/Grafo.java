@@ -92,7 +92,10 @@ public class Grafo {
         return n;
     }
 
-    private boolean
+    private boolean existsID(Integer id) {
+        if (id > lastId) return false;
+        return IDorfenes.contains(id);
+    }
 
     //METODES PUBLICS (It's free!)
 
@@ -322,7 +325,7 @@ public class Grafo {
     }
 
     /*  parides que m'ha demanat l'Albert:    */
-    public boolean exists(String nom, String tipoEntidad) {
+    public boolean existsNom(String nom, String tipoEntidad) {
         boolean b = false;
         switch (tipoEntidad) {
             case "Articulo":
