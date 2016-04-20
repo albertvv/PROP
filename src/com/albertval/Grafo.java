@@ -2,6 +2,7 @@ import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.sparse.CCSMatrix;
 import org.la4j.vector.sparse.CompressedVector;
 
+import java.util.TreeSet;
 import java.util.Vector;
 
 
@@ -9,6 +10,7 @@ import java.util.Vector;
 public class Grafo {
 
     /*
+     *
      * REPRESENTACIO DEL GRAF:
      * Una entitat d'un tipus arbitrari te el mateix index a les matrius d'adjacencia (de fila si es Paper, de
      * columna altrament) que al seu vector corresponent. Sota aquesta implementacio, entre 2 i 4 nodes (entitats),
@@ -19,25 +21,30 @@ public class Grafo {
      * com en les matrius en que hi figuri (a fi de mantenir l'invariant dels indexos compartits).
      *
      * El graf guarda la darrera ID emprada per assignar-ne la consecutiva a noves entitats.
+     * Tambe es guarden les ID entre 0 i la darrera ID emprada, amb la mateixa finalitat, i, a mes a mes, per
+     * poder comprovar si una ID s'esta fent servir per prevenir, per exemple, insercions sense sentit.
+     *
      */
 
     //NOTA PER AL MARC DEL FUTUR:
-    //Hauries d'implementar una cua per guardar les ids d'entitats eliminades,per poder-les aprofitar en noves entitats
+    //Podries implementar una cua per guardar les IDs d'entitats eliminades, podent-les aprofitar en noves entitats
 
     //ATRIBUTS
 
-	/*Vectors d'entitats*/
+    /* Vectors d'entitats */
+    //REVISAR: L'estructura de dades "TreeSet" seria mes eficient que aquesta merda de vectors cutres
     private Vector<Articulo>	vectorArticulo;
-    private Vector<Autor>	vectorAutor;
+    private Vector<Autor>	    vectorAutor;
     private Vector<Conferencia>	vectorConferencia;
-    private Vector<Termino>	vectorTermino;
+    private Vector<Termino>	    vectorTermino;
 
-    /*Matrius d'adjacencia*/
-    private SparseMatrix    	matrizPaperAutor;
+    /* Matrius d'adjacencia */
+    private SparseMatrix    matrizPaperAutor;
     private SparseMatrix	matrizPaperConferencia;
     private SparseMatrix	matrizPaperTermino;
 
-    /*Darrera ID emprada*/
+    /* Informacio per assignar noves ID */
+    private TreeSet<Integer>  IDorfenes;
     private Integer lastId;
 
 
@@ -49,14 +56,15 @@ public class Grafo {
         vectorArticulo 			= new Vector<Articulo>();
 
         matrizPaperAutor 		= new CCSMatrix();
-        matrizPaperConferencia  	= new CCSMatrix();
+        matrizPaperConferencia  = new CCSMatrix();
         matrizPaperTermino 		= new CCSMatrix();
 
+        IDorfenes = new TreeSet<Integer>();
         lastId = -1;
     }
 
 
-    //METODES
+    //METODES PRIVATS
 
     /*Pre: */
     /*Post: si existeix alguna entitat amb Nombre=nom al graf, retorna l'index corresponent a la seva primera
@@ -84,26 +92,30 @@ public class Grafo {
         return n;
     }
 
+    private boolean
+
+    //METODES PUBLICS (It's free!)
+
     /*Aquest mètode podria ser privat (el controlador del graf no l'hauria de necessitar)*/
     public int getIndice(String nombre, String tipo) {
         int n;
         switch (tipo) {
             case "Articulo":
                 n = vectorArticulo.size();
-                for (int i = 0; i < n; ++n)
-                    if (vectorArticulo.get(i).getNombre().equals(nombre)) return i;
+                //substituir per dicotomica
+                for (int i = 0; i < n; ++n) if (vectorArticulo.get(i).getNombre().equals(nombre)) return i;
             case "Autor":
                 n = vectorAutor.size();
-                for (int i = 0; i < n; ++n)
-                    if (vectorAutor.get(i).getNombre().equals(nombre)) return i;
+                //substituir per dicotomica
+                for (int i = 0; i < n; ++n) if (vectorAutor.get(i).getNombre().equals(nombre)) return i;
             case "Conferencia":
                 n = vectorConferencia.size();
-                for (int i = 0; i < n; ++n)
-                    if (vectorConferencia.get(i).getNombre().equals(nombre)) return i;
+                //substituir per dicotomica
+                for (int i = 0; i < n; ++n) if (vectorConferencia.get(i).getNombre().equals(nombre)) return i;
             case "Termino":
                 n = vectorTermino.size();
-                for (int i = 0; i < n; ++n)
-                    if (vectorTermino.get(i).getNombre().equals(nombre)) return i;
+                //substituir per dicotomica
+                for (int i = 0; i < n; ++n) if (vectorTermino.get(i).getNombre().equals(nombre)) return i;
             default:
                 System.out.println("Capsigrany! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
                 return -1;
@@ -230,7 +242,8 @@ public class Grafo {
                 break;
         }
     }
-    
+
+    //Aquest metode s'ha d'arreglar
     public Vector<Entidad> getRelacion(String nombre, String tipoEntidad) {
         Vector<Entidad> vR = new Vector<Entidad>();
         int i, j, n;
@@ -310,23 +323,24 @@ public class Grafo {
 
     /*  parides que m'ha demanat l'Albert:    */
     public boolean exists(String nom, String tipoEntidad) {
+        boolean b = false;
         switch (tipoEntidad) {
             case "Articulo":
-                break;
+                //cerca
+                return b;
             case "Autor":
-                break;
+                //cerca
+                return b;
             case "Conferencia":
-                break;
+                //cerca
+                return b;
             case "Termino":
-                break;
+                //cerca
+                return b;
             default:
-                break;
+                System.out.println("Espavila! El tipus d'entitat no es correcte");
+                return false;
         }
-    }
-
-    public String getId(String nom, String tipusEntitat) {
-        //
-        return null;
     }
 
     public String getNombre(Integer id, String tipusEntitat) {
@@ -346,19 +360,37 @@ public class Grafo {
     //NOTA PER AL MARC DEL FUTUR:
     //Dir-li a l'Alvar que no es pot fer aquest metode
     //perque hi ha conflicte amb l'herencia de classes
-    public void addEntidadFull(Entidad e, String tipoEntidad) {
+    //es necessita una funcio per cada tipus d'Entitat
+    public void addEntidadFULL(Entidad e, String tipoEntidad) {
+        //Cal comprovar que la ID de l'Entitat e no es repeteixi en el graf
         switch (tipoEntidad) {
             case "Articulo":
                 vectorArticulo.addElement(e);
+                if (e.getId() > lastId) {
+                    //afegir intermitjos a la cua (opcional)
+                    lastId = e.getId();
+                }
                 break;
             case "Autor":
                 vectorAutor.addElement(e);
+                if (e.getId() > lastId) {
+                    //afegir intermitjos a la cua (opcional)
+                    lastId = e.getId();
+                }
                 break;
             case "Conferencia":
                 vectorConferencia.addElement(e);
+                if (e.getId() > lastId) {
+                    //afegir intermitjos a la cua (opcional)
+                    lastId = e.getId();
+                }
                 break;
             case "Termino":
                 vectorTermino.addElement(e);
+                if (e.getId() > lastId) {
+                    //afegir intermitjos a la cua (opcional)
+                    lastId = e.getId();
+                }
                 break;
             default:
                 System.out.println("Carallot! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
