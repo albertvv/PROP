@@ -2,7 +2,6 @@ import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.sparse.CCSMatrix;
 import org.la4j.vector.sparse.CompressedVector;
 
-import java.util.TreeSet;
 import java.util.Vector;
 
 
@@ -10,7 +9,6 @@ import java.util.Vector;
 public class Grafo {
 
     /*
-     *
      * REPRESENTACIO DEL GRAF:
      * Una entitat d'un tipus arbitrari te el mateix index a les matrius d'adjacencia (de fila si es Paper, de
      * columna altrament) que al seu vector corresponent. Sota aquesta implementacio, entre 2 i 4 nodes (entitats),
@@ -21,30 +19,23 @@ public class Grafo {
      * com en les matrius en que hi figuri (a fi de mantenir l'invariant dels indexos compartits).
      *
      * El graf guarda la darrera ID emprada per assignar-ne la consecutiva a noves entitats.
-     * Tambe es guarden les ID entre 0 i la darrera ID emprada, amb la mateixa finalitat, i, a mes a mes, per
-     * poder comprovar si una ID s'esta fent servir per prevenir, per exemple, insercions sense sentit.
-     *
      */
 
-    //NOTA PER AL MARC DEL FUTUR:
-    //Podries implementar una cua per guardar les IDs d'entitats eliminades, podent-les aprofitar en noves entitats
 
     //ATRIBUTS
 
-    /* Vectors d'entitats */
-    //REVISAR: L'estructura de dades "TreeSet" seria mes eficient que aquesta merda de vectors cutres
+	/*Vectors d'entitats*/
     private Vector<Articulo>	vectorArticulo;
-    private Vector<Autor>	    vectorAutor;
+    private Vector<Autor>		vectorAutor;
     private Vector<Conferencia>	vectorConferencia;
-    private Vector<Termino>	    vectorTermino;
+    private Vector<Termino>		vectorTermino;
 
-    /* Matrius d'adjacencia */
+    /*Matrius d'adjacencia*/
     private SparseMatrix    matrizPaperAutor;
     private SparseMatrix	matrizPaperConferencia;
     private SparseMatrix	matrizPaperTermino;
 
-    /* Informacio per assignar noves ID */
-    private TreeSet<Integer>  IDorfenes;
+    /*Darrera ID emprada*/
     private Integer lastId;
 
 
@@ -59,25 +50,19 @@ public class Grafo {
         matrizPaperConferencia  = new CCSMatrix();
         matrizPaperTermino 		= new CCSMatrix();
 
-        IDorfenes = new TreeSet<Integer>();
         lastId = -1;
     }
-
 
     //METODES PRIVATS
 
     /*Pre: */
     /*Post: si existeix alguna entitat amb Nombre=nom al graf, retorna l'index corresponent a la seva primera
-     *      aparicio, i repeticions es igual al nombre d'aparicions. Si no n'existeix cap retorna -1 */
-    //NOTA PER AL MARC DEL FUTUR:
-    //Si no es troba, la suggerencia "opcional" s'hauria de calcular aqui
-    private int cercaDicotomica(String nom, String tipoEntidad, Integer repeticions) {
+     *      aparicio, i repeticions es igual al nombre d'aparicions. Si no n'existeix cap retorna -1 i pos
+     *      conte la posicio que hauria d'ocupar*/
+    private int cercaDicotomica(String nom, String tipoEntidad, Integer repeticions, Integer pos) {
         int n = -1, rep = 0, l = 0, r, m;
         switch (tipoEntidad) {
             case "Articulo":
-                r = vectorArticulo.size();
-                m = (l+r)/2;
-                //for (int i = 0; i < )
                 break;
             case "Autor":
                 break;
@@ -92,38 +77,10 @@ public class Grafo {
         return n;
     }
 
-    private boolean existsID(Integer id) {
-        if (id > lastId) return false;
-        return IDorfenes.contains(id);
-    }
+    private int getIndice(String nombre, String tipo) { return cercaDicotomica(nombre, tipo, null, null); } //redundant
+
 
     //METODES PUBLICS (It's free!)
-
-    /*Aquest mètode podria ser privat (el controlador del graf no l'hauria de necessitar)*/
-    public int getIndice(String nombre, String tipo) {
-        int n;
-        switch (tipo) {
-            case "Articulo":
-                n = vectorArticulo.size();
-                //substituir per dicotomica
-                for (int i = 0; i < n; ++n) if (vectorArticulo.get(i).getNombre().equals(nombre)) return i;
-            case "Autor":
-                n = vectorAutor.size();
-                //substituir per dicotomica
-                for (int i = 0; i < n; ++n) if (vectorAutor.get(i).getNombre().equals(nombre)) return i;
-            case "Conferencia":
-                n = vectorConferencia.size();
-                //substituir per dicotomica
-                for (int i = 0; i < n; ++n) if (vectorConferencia.get(i).getNombre().equals(nombre)) return i;
-            case "Termino":
-                n = vectorTermino.size();
-                //substituir per dicotomica
-                for (int i = 0; i < n; ++n) if (vectorTermino.get(i).getNombre().equals(nombre)) return i;
-            default:
-                System.out.println("Capsigrany! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
-                return -1;
-        }
-    }
 
     public void addEntidad(String nombre, String tipoEntidad) {
         Integer index = getIndice(nombre, tipoEntidad);
@@ -133,29 +90,29 @@ public class Grafo {
                 Articulo tmpArticulo = new Articulo(++lastId, nombre);
                 vectorArticulo.add(index, tmpArticulo);
                 tmpVec1 = new CompressedVector(vectorAutor.size());
-                matrizPaperAutor.insertRow(vectorArticulo.size()-1, tmpVec1);
                 tmpVec2 = new CompressedVector(vectorConferencia.size());
-                matrizPaperConferencia.insertRow(vectorArticulo.size()-1, tmpVec2);
                 tmpVec3 = new CompressedVector(vectorArticulo.size());
-                matrizPaperTermino.insertRow(vectorArticulo.size()-1, tmpVec3);
+                matrizPaperAutor.insertRow(vectorArticulo.size(), tmpVec1);
+                matrizPaperConferencia.insertRow(vectorArticulo.size(), tmpVec2);
+                matrizPaperTermino.insertRow(vectorArticulo.size(), tmpVec3);
                 break;
             case "Autor":
                 Autor tmpAutor = new Autor(++lastId, nombre);
                 vectorAutor.add(index, tmpAutor);
                 tmpVec1 = new CompressedVector();
-                matrizPaperAutor.insertColumn(vectorAutor.size()-1, tmpVec1);
+                matrizPaperAutor.insertColumn(vectorAutor.size(), tmpVec1);
                 break;
             case "Conferencia":
                 Conferencia tmpConferencia = new Conferencia(++lastId, nombre);
                 vectorConferencia.add(index, tmpConferencia);
                 tmpVec1 = new CompressedVector();
-                matrizPaperConferencia.insertColumn(vectorAutor.size()-1, tmpVec1);
+                matrizPaperConferencia.insertColumn(vectorAutor.size(), tmpVec1);
                 break;
             case "Termino":
                 Termino tmpTermino = new Termino(++lastId, nombre);
                 vectorTermino.add(index, tmpTermino);
                 tmpVec1 = new CompressedVector();
-                matrizPaperTermino.insertColumn(vectorAutor.size()-1, tmpVec1);
+                matrizPaperTermino.insertColumn(vectorAutor.size(), tmpVec1);
                 break;
             default:
                 System.out.println("Tros d'ase! Cal triar un tipus d'entitat valid");
@@ -246,7 +203,6 @@ public class Grafo {
         }
     }
 
-    //Aquest metode s'ha d'arreglar
     public Vector<Entidad> getRelacion(String nombre, String tipoEntidad) {
         Vector<Entidad> vR = new Vector<Entidad>();
         int i, j, n;
@@ -306,11 +262,7 @@ public class Grafo {
         }
     }
 
-    public SparseMatrix getMatriz(String tipoFila, String tipoColumna) {
-        if (!tipoFila.equals("Articulo"))/*atribut innecessari...?*/{
-            System.out.println("Gamarús! El tipus de fila de totes les matrius és 'Paper'");
-            return null;
-        }
+    public SparseMatrix getMatriz(String tipoColumna) {
         switch (tipoColumna) {
             case "Autor":
                 return matrizPaperAutor;
@@ -325,32 +277,42 @@ public class Grafo {
     }
 
     /*  parides que m'ha demanat l'Albert:    */
-    public boolean existsNom(String nom, String tipoEntidad) {
-        boolean b = false;
-        switch (tipoEntidad) {
-            case "Articulo":
-                //cerca
-                return b;
-            case "Autor":
-                //cerca
-                return b;
-            case "Conferencia":
-                //cerca
-                return b;
-            case "Termino":
-                //cerca
-                return b;
-            default:
-                System.out.println("Espavila! El tipus d'entitat no es correcte");
-                return false;
-        }
-    }
+    public boolean exists(String nom, String tipoEntidad) { return (cercaDicotomica(nom, tipoEntidad, null, null) != -1); }
 
-    public String getNombre(Integer id, String tipusEntitat) {
-        //
+    public Integer getId(String nom, String tipusEntitat) {
+        Integer i = cercaDicotomica(nom, tipusEntitat, null, null);
+        if (!i.equals(-1)) {
+            switch (tipusEntitat) {
+                case "Articulo":
+                    return vectorArticulo.get(i).getId();
+                case "Autor":
+                    return vectorAutor.get(i).getId();
+                case "Conferencia":
+                    return vectorConferencia.get(i).getId();
+                case "Termino":
+                    return vectorTermino.get(i).getId();
+            }
+        }
         return null;
     }
-
+/*
+    public String getNombre(Integer id, String tipusEntitat) {
+        //cerca per id
+        if (!i.equals(-1)) {
+            switch (tipusEntitat) {
+                case "Articulo":
+                    return vectorArticulo.get(i).getNombre();
+                case "Autor":
+                    return vectorAutor.get(i).getNombre();
+                case "Conferencia":
+                    return vectorConferencia.get(i).getNombre();
+                case "Termino":
+                    return vectorTermino.get(i).getNombre();
+            }
+        }
+        return null;
+    }
+*/
     /*  xorrades que vol l'Alvar:   */
     public Vector<Articulo> getArticulos() { return vectorArticulo; }
 
@@ -360,44 +322,51 @@ public class Grafo {
 
     public Vector<Termino> getTerminos() { return vectorTermino; }
 
-    //NOTA PER AL MARC DEL FUTUR:
-    //Dir-li a l'Alvar que no es pot fer aquest metode
-    //perque hi ha conflicte amb l'herencia de classes
-    //es necessita una funcio per cada tipus d'Entitat
-    public void addEntidadFULL(Entidad e, String tipoEntidad) {
-        //Cal comprovar que la ID de l'Entitat e no es repeteixi en el graf
-        switch (tipoEntidad) {
-            case "Articulo":
-                vectorArticulo.addElement(e);
-                if (e.getId() > lastId) {
-                    //afegir intermitjos a la cua (opcional)
-                    lastId = e.getId();
-                }
-                break;
-            case "Autor":
-                vectorAutor.addElement(e);
-                if (e.getId() > lastId) {
-                    //afegir intermitjos a la cua (opcional)
-                    lastId = e.getId();
-                }
-                break;
-            case "Conferencia":
-                vectorConferencia.addElement(e);
-                if (e.getId() > lastId) {
-                    //afegir intermitjos a la cua (opcional)
-                    lastId = e.getId();
-                }
-                break;
-            case "Termino":
-                vectorTermino.addElement(e);
-                if (e.getId() > lastId) {
-                    //afegir intermitjos a la cua (opcional)
-                    lastId = e.getId();
-                }
-                break;
-            default:
-                System.out.println("Carallot! El tipus d'entitat ha de ser Articulo, Autor, Conferencia o Termino");
-                break;
-        }
+    public void addArticulo(Articulo a) {
+        //matrius
+        org.la4j.Vector tmpVec1, tmpVec2, tmpVec3;
+        tmpVec1 = new CompressedVector(vectorAutor.size());
+        tmpVec2 = new CompressedVector(vectorConferencia.size());
+        tmpVec3 = new CompressedVector(vectorTermino.size());
+        matrizPaperAutor.insertRow(vectorArticulo.size(), tmpVec1);
+        matrizPaperConferencia.insertRow(vectorArticulo.size(), tmpVec2);
+        matrizPaperTermino.insertRow(vectorArticulo.size(), tmpVec3);
+        //vector
+        vectorArticulo.addElement(a);
+        //lastId
+        if (lastId < a.getId()) lastId = a.getId();
+    }
+
+    public void addAutor(Autor a) {
+        //matrius
+        org.la4j.Vector tmpVec;
+        tmpVec = new CompressedVector(vectorArticulo.size());
+        matrizPaperAutor.insertColumn(vectorAutor.size(), tmpVec);
+        //vector
+        vectorAutor.addElement(a);
+        //lastId
+        if (lastId < a.getId()) lastId = a.getId();
+    }
+
+    public void addConferencia(Conferencia c) {
+        //matrius
+        org.la4j.Vector tmpVec;
+        tmpVec = new CompressedVector(vectorArticulo.size());
+        matrizPaperConferencia.insertColumn(vectorConferencia.size(), tmpVec);
+        //vector
+        vectorConferencia.addElement(c);
+        //lastId
+        if (lastId < c.getId()) lastId = c.getId();
+    }
+
+    public void addTermino(Termino t) {
+        //matrius
+        org.la4j.Vector tmpVec;
+        tmpVec = new CompressedVector(vectorArticulo.size());
+        matrizPaperTermino.insertColumn(vectorTermino.size(), tmpVec);
+        //vector
+        vectorTermino.addElement(t);
+        //lastId
+        if (lastId < t.getId()) lastId = t.getId();
     }
 }
