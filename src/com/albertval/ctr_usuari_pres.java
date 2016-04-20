@@ -279,65 +279,60 @@ public class ctr_usuari_pres {
     private boolean comprovar_tipus_relacio(String tipus){
         return (tipus.equals("AP")) || (tipus.equals("TP")) || (tipus.equals("CP"));
     }
-    private boolean entrada_element(String nom, String tipus){
-        System.out.print("Escriu el nom: ");
-        nom = sc.next();
-        System.out.print("Escriu el tipus(Articulo|Autor|Conferencia|Termino): ");
-        tipus = sc.next();
-        if(comprovar_tipus_element(tipus)) return true;
-        System.out.println("Tipus incorrecte");
-        return false;
-
-    }
-    private boolean entrada_relacio(String element1, String element2, String tipus){
-        System.out.print("Escriu el nom del primer element(no pot ser un paper): ");
-        element1 = sc.next();
-        System.out.print("Escriu el nom del segon element(ha de ser un paper): ");
-        element2 = sc.next();
-        System.out.print("Escriu el tipus de relacio(AP|TP|CP)");
-        tipus = sc.next();
-        if(comprovar_tipus_relacio(tipus)) return true;
-        System.out.println("Tipus incorrecte");
-        return false;
-    }
     private void afegir_element(){
-        String nom = " ";
-        String tipus = " ";
-        if(entrada_element(nom, tipus)) {
+        System.out.print("Escriu el nom: ");
+        String nom = sc.next();
+        System.out.print("Escriu el tipus(Articulo|Autor|Conferencia|Termino): ");
+        String tipus = sc.next();
+        if(comprovar_tipus_element(tipus)) {
             if (ctrdom.afegir_element(nom, tipus)) System.out.println("Element afegit");
             else System.out.println("L'element ja hi era");
         }
+        else System.out.println("Tipus incorrecte");
     }
     private void afegir_relacio_graf(){
-        String element1 = " ";
-        String element2 = " ";
-        String tipus = " ";
-        if(entrada_relacio(element1, element2, tipus)) {
+        System.out.print("Escriu el nom del primer element(no pot ser un paper): ");
+        String element1 = sc.next();
+        System.out.print("Escriu el nom del segon element(ha de ser un paper): ");
+        String element2 = sc.next();
+        System.out.print("Escriu el tipus de relacio(AP|TP|CP)");
+        String tipus = sc.next();
+        if(comprovar_tipus_relacio(tipus)) {
             if(ctrdom.afegir_relacio_graf(element1, element2, tipus)) System.out.println("Relacio afegida");
             else System.out.println("La relacio ja existia o un dels elements no existeix");
         }
+        else System.out.println("Tipus incorrecte");
     }
     private void esborrar_element(){
-        String nom = " ";
-        String tipus = " ";
-        if(entrada_element(nom, tipus)){
+        System.out.print("Escriu el nom: ");
+        String nom = sc.next();
+        System.out.print("Escriu el tipus(Articulo|Autor|Conferencia|Termino): ");
+        String tipus = sc.next();
+        if(comprovar_tipus_element(tipus)){
             if(ctrdom.esborrar_element(nom, tipus)) System.out.println("Element esborrat");
             else System.out.println("L'element no existia");
         }
+        else System.out.println("Tipus incorrecte");
     }
     private void esborrar_relacio_graf(){
-        String element1 = " ";
-        String element2 = " ";
-        String tipus = " ";
-        if(entrada_relacio(element1,element2,tipus)){
+        System.out.print("Escriu el nom del primer element(no pot ser un paper): ");
+        String element1 = sc.next();
+        System.out.print("Escriu el nom del segon element(ha de ser un paper): ");
+        String element2 = sc.next();
+        System.out.print("Escriu el tipus de relacio(AP|TP|CP)");
+        String tipus = sc.next();
+        if(comprovar_tipus_relacio(tipus)){
             if(ctrdom.esborrar_relacio_graf(element1, element2,tipus)) System.out.println("Relacio esborrada");
             else System.out.println("La relacio no existia");
         }
+        else System.out.println("Tipus incorrecte");
     }
     private void consultar_relacions_directes(){
-        String nom = " ";
-        String tipus = " ";
-        if(entrada_element(nom, tipus)){
+        System.out.print("Escriu el nom: ");
+        String nom = sc.next();
+        System.out.print("Escriu el tipus(Articulo|Autor|Conferencia|Termino): ");
+        String tipus = sc.next();
+        if(comprovar_tipus_element(tipus)){
             ArrayList<ArrayList<String>> relacions_directes = ctrdom.relacions_directes(nom, tipus);
             ArrayList<String> aux;
             for(int i = 0;i < relacions_directes.size(); ++i) {
@@ -348,5 +343,6 @@ public class ctr_usuari_pres {
                 System.out.println();
             }
         }
+        else System.out.println("Tipus incorrecte");
     }
 }
