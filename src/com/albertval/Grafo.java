@@ -180,8 +180,9 @@ public class Grafo {
     public int getIndice(String nombre, String tipo) { return cercaDicotomica(nombre, tipo, null, null); }
 
     public void addEntidad(String nombre, String tipoEntidad) {
-        Integer index = new Integer(-1);
+        Integer index = new Integer(0);
         cercaDicotomica(nombre, tipoEntidad, null, index);
+        System.out.println("xivato: s'afegeix amb index " + index);
         org.la4j.Vector tmpVec1, tmpVec2, tmpVec3;
         switch (tipoEntidad) {
             case "Paper":
@@ -189,28 +190,27 @@ public class Grafo {
                 vectorPaper.add(index, tmpPaper);
                 tmpVec1 = new CompressedVector(vectorAutor.size());
                 tmpVec2 = new CompressedVector(vectorConferencia.size());
-                tmpVec3 = new CompressedVector(vectorPaper.size());
+                tmpVec3 = new CompressedVector(vectorTermino.size());
                 matrizPaperAutor.insertRow(index, tmpVec1);
                 matrizPaperConferencia.insertRow(index, tmpVec2);
                 matrizPaperTermino.insertRow(index, tmpVec3);
                 break;
             case "Autor":
                 Autor tmpAutor = new Autor(++lastId, nombre);
-                System.out.println(index);
                 vectorAutor.add(index, tmpAutor);
-                tmpVec1 = new CompressedVector();
+                tmpVec1 = new CompressedVector(vectorPaper.size());
                 matrizPaperAutor.insertColumn(index, tmpVec1);
                 break;
             case "Conferencia":
                 Conferencia tmpConferencia = new Conferencia(++lastId, nombre);
                 vectorConferencia.add(index, tmpConferencia);
-                tmpVec1 = new CompressedVector();
+                tmpVec1 = new CompressedVector(vectorPaper.size());
                 matrizPaperConferencia.insertColumn(index, tmpVec1);
                 break;
             case "Termino":
                 Termino tmpTermino = new Termino(++lastId, nombre);
                 vectorTermino.add(index, tmpTermino);
-                tmpVec1 = new CompressedVector();
+                tmpVec1 = new CompressedVector(vectorPaper.size());
                 matrizPaperTermino.insertColumn(index, tmpVec1);
                 break;
             default:
@@ -346,18 +346,17 @@ public class Grafo {
     }
 
     public Entidad getEntidad(String nombre, String tipoEntidad) {
-        Integer i = new Integer(-1);
-        cercaDicotomica(nombre, tipoEntidad, null, i);
-        if (!i.equals(-1)) {
+        Integer pos = cercaDicotomica(nombre, tipoEntidad, null, null);
+        if (!pos.equals(-1)) {
             switch (tipoEntidad) {
                 case "Paper":
-                    return vectorPaper.get(getIndice(nombre, "Paper"));
+                    return vectorPaper.get(pos);
                 case "Autor":
-                    return vectorAutor.get(getIndice(nombre, "Autor"));
+                    return vectorAutor.get(pos);
                 case "Conferencia":
-                    return vectorConferencia.get(getIndice(nombre, "Conferencia"));
+                    return vectorConferencia.get(pos);
                 case "Termino":
-                    return vectorTermino.get(getIndice(nombre, "Termino"));
+                    return vectorTermino.get(pos);
                 default:
                     System.out.println("Tanoca! Cal triar un tipus d'entitat valid");
                     return null;
@@ -410,7 +409,7 @@ public class Grafo {
     public Vector<Termino> getTerminos() { return vectorTermino; }
 
     public void addPaper(Paper a) {
-        Integer i = new Integer(-1);
+        Integer i = new Integer(0);
         cercaDicotomica(a.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec1, tmpVec2, tmpVec3;
@@ -427,7 +426,7 @@ public class Grafo {
     }
 
     public void addAutor(Autor a) {
-        Integer i = new Integer(-1);
+        Integer i = new Integer(0);
         cercaDicotomica(a.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
@@ -440,7 +439,7 @@ public class Grafo {
     }
 
     public void addConferencia(Conferencia c) {
-        Integer i = new Integer(-1);
+        Integer i = new Integer(0);
         cercaDicotomica(c.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
@@ -453,7 +452,7 @@ public class Grafo {
     }
 
     public void addTermino(Termino t) {
-        Integer i = new Integer(-1);
+        Integer i = new Integer(0);
         cercaDicotomica(t.getNombre(), "Paper", null, i);
         //matrius
         org.la4j.Vector tmpVec;
