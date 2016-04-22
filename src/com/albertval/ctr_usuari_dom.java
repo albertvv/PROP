@@ -2,13 +2,16 @@ import java.util.*;
 
 public class ctr_usuari_dom {
     private Scanner sc = new Scanner(System.in);
-    private ConjuntoUsuarios<usuari_estandard> cjt;
+    private ConjuntoUsuarios cjt;
     private usuari_estandard user;
-    private grafo graf;
+    private Grafo graf;
+    private final int nusuaris = 6;
+    private final int nrel = 3;
+    private final int nreldir = 3;
     public void carregar_cjt_usuaris(ConjuntoUsuarios cjt){
         this.cjt = cjt;
     }
-    public void carregar_graf(grafo graf){
+    public void carregar_graf(Grafo graf){
         this.graf = graf;
     }
     public boolean crear_usuari(String username, String pass, boolean privilegiat){
@@ -17,11 +20,12 @@ public class ctr_usuari_dom {
         else user = new usuari_estandard(username, pass);
         return cjt.addUsuario(user);
     }
-    public boolean afegir_relacio(String nom, String path, String descripcio){
-        return user.definir_relacio(nom, path, descripcio);
+    public void afegir_relacio(String nom, String path, String descripcio){
+        if(descripcio.equals("null")) user.addRelacion(nom, path);
+        else user.addRelacion(nom, path, descripcio);
     }
-    public boolean modificar_relacio(String nomAntic, String nomNou, String descripcio){
-        return user.modificar_relacio(nomAntic, nomNou, descripcio);
+    public boolean modificar_relacio(String nom, String nomNou, String path, String descripcio){
+        return user.modificar_relacio(nom, nomNou, path, descripcio);
     }
     public boolean esborrar_relacio(String nom){
         return user.deleteRelacion(nom);
@@ -35,7 +39,7 @@ public class ctr_usuari_dom {
         usuari_estandard auxiliar;
         Iterator it = map.keySet().iterator();
         while (it.hasNext()){
-            ArrayList<String> result_aux = new ArrayList<String>(6);
+            ArrayList<String> result_aux = new ArrayList<String>(nusuaris);
             String key = (String)it.next();
             auxiliar = map.get(key);
             result_aux.add(auxiliar.getUsername());
@@ -54,7 +58,7 @@ public class ctr_usuari_dom {
         TipoRelacion auxiliar;
         Iterator it = map.keySet().iterator();
         while (it.hasNext()){
-            ArrayList<String> result_aux = new ArrayList<String>(3);
+            ArrayList<String> result_aux = new ArrayList<String>(nrel);
             String key = (String)it.next();
             auxiliar = map.get(key);
             result_aux.add(auxiliar.getNombre());
@@ -76,33 +80,32 @@ public class ctr_usuari_dom {
     public void borrar_usuari_estandard(){
         cjt.deleteUsuario(user.getUsername());
     }
+    private usuari_privilegiat aux(usuari_privilegiat up){return up;}
     public boolean modificar_usuari(String username, String oldPass, String pass, String nom, String sexe, Date data, boolean esPrivilegiat) {
-        if(esPrivilegiat) return aux_modificar_usuari((usuari_privilegiat)user, username, pass, nom, sexe, data);
+        if(esPrivilegiat) return (aux((usuari_privilegiat)user)).modificar_usuari(username, pass, nom, sexe, data, cjt);
         else return user.modificar_usuari(oldPass, pass, nom, sexe, data);
     }
-    private boolean aux_modificar_usuari(usuari_privilegiat up, String username, String pass, String nom, String sexe, Date data){
-        return up.modificar_usuari(username, pass, nom, sexe, data, cjt);
-    }
-    public boolean borrar_usuari(String user_borrar){
-        return aux_borrar_usuari((usuari_privilegiat)user, user_borrar);
-    }
-    private boolean aux_borrar_usuari(usuari_privilegiat up, String user_borrar){
-        return up.borrar_usuari(user_borrar, cjt);
+    public boolean borrar_usuari(String user_borrar) {
+        return (aux((usuari_privilegiat) user)).borrar_usuari(user_borrar, cjt);
     }
     public boolean donar_privilegis(String username){
         usuari_estandard usuari = cjt.getUsuario(username);
-        if(usuari instanceof usuari_privilegiat) return false;
-        return aux_donar_privilegis((usuari_privilegiat)user, username);
+        if((usuari == null) || (usuari instanceof usuari_privilegiat)) return false;
+        (aux((usuari_privilegiat) user)).donar_privilegis(usuari, cjt);
+        return true;
     }
-    private boolean aux_donar_privilegis(usuari_privilegiat user, String username){
-        return user.donar_privilegis(username, cjt);
+    public void afegir_element(String nom, String tipus, String etiq){
+        (aux((usuari_privilegiat) user)).afegir_element(nom, tipus, etiq, graf);
     }
-    public boolean afegir_element(String nom, String tipus){
-        return graf.addEntidad(nom, tipus);
+    public void afegir_relacio_graf(String primer, String segon, String tipus){
+        (aux((usuari_privilegiat) user)).afegir_relacio_graf(primer, segon, tipus, graf);
     }
-    public boolean afegir_relacio_graf(String primer, String segon, String tipus){return graf.addRelacion(primer,segon,tipus);}
-    public boolean esborrar_element(String nom, String tipus){return graf.deleteEntidad(nom, tipus);}
-    public boolean esborrar_relacio_graf(String primer, String segon, String tipus){return graf.deleteRelacion(primer, segon, tipus);}
+    public void esborrar_element(String nom, String tipus){
+        (aux((usuari_privilegiat) user)).esborrar_element(nom, tipus, graf);
+    }
+    public void esborrar_relacio_graf(String primer, String segon, String tipus){
+        (aux((usuari_privilegiat) user)).esborrar_relacio_graf(primer, segon, tipus, graf);
+    }
     public ArrayList<ArrayList<String>> relacions_directes(String nom, String tipus){
         Vector<Entidad> vector = graf.getRelacion(nom, tipus);
         ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
@@ -110,7 +113,7 @@ public class ctr_usuari_dom {
         Entidad eaux;
         while(it.hasNext()){
             eaux = (Entidad)it.next();
-            ArrayList<String> aaux = new ArrayList<String>(3);
+            ArrayList<String> aaux = new ArrayList<String>(nreldir);
             aaux.add(Integer.toString(eaux.getId()));
             aaux.add(eaux.getNombre());
             aaux.add(eaux.getEtiq());
