@@ -24,16 +24,17 @@ public class ControladorGrafoPersist {
 
     public ControladorGrafoPersist() {
         //Direccions dels fitxers continguts a DBLP
-        this.paper = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\paper.txt";
-        this.author = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\author.txt";
-        this.conf = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\conf.txt";
-        this.term = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\term.txt";
-        this.paper_label = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\paper_label.txt";
-        this.author_label = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\author_label.txt";
-        this.conf_label = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\conf_label.txt";
-        this.paper_author = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\paper_author.txt";
-        this.paper_conf = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\paper_conf.txt";
-        this.paper_term = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\paper_term.txt";
+        String dir = "C:\\Users\\Àlvar\\IdeaProjects\\LLegir\\src\\prop\\alvarHernandez\\DBLP_four_area\\";
+        this.paper = dir + "paper.txt";
+        this.author = dir + "author.txt";
+        this.conf = dir + "conf.txt";
+        this.term = dir + "term.txt";
+        this.paper_label = dir + "paper_label.txt";
+        this.author_label = dir + "author_label.txt";
+        this.conf_label = dir + "conf_label.txt";
+        this.paper_author = dir + "paper_author.txt";
+        this.paper_conf = dir + "paper_conf.txt";
+        this.paper_term = dir + "paper_term.txt";
 
     }
 
