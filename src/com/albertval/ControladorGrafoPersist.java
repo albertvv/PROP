@@ -97,6 +97,7 @@ public class ControladorGrafoPersist {
             if(M.get(i).size() == 3) {
                 int n = getNumEtiqueta(M.get(i).get(2));
                 bw.write(M.get(i).get(0) + "    " + Integer.toString(n) + "    " + M.get(i).get(1));
+                bw.newLine();
             }
         }
         bw.close();
@@ -316,6 +317,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < Papers.size(); ++i) {
                 bw.write(Papers.get(i).get(0) + "    " + Papers.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -330,6 +332,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < Autores.size(); ++i) {
                 bw.write(Autores.get(i).get(0) + "    " + Autores.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -344,6 +347,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < Conferencias.size(); ++i) {
                 bw.write(Conferencias.get(i).get(0) + "    " + Conferencias.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -357,6 +361,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < Terminos.size(); ++i) {
                 bw.write(Terminos.get(i).get(0) + "    " + Terminos.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -370,6 +375,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < PA.size(); ++i) {
                 bw.write(PA.get(i).get(0) + "    " + PA.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -383,6 +389,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < PC.size(); ++i) {
                 bw.write(PC.get(i).get(0) + "    " + PC.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
@@ -396,6 +403,7 @@ public class ControladorGrafoPersist {
             bw = new BufferedWriter(new FileWriter(fichero));
             for(int i = 0; i < PT.size(); ++i) {
                 bw.write(PT.get(i).get(0) + "    " + PT.get(i).get(1));
+                bw.newLine();
             }
             bw.close();
             return true;
