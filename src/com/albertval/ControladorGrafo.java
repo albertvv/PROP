@@ -141,7 +141,7 @@ public class ControladorGrafo {
         Vector<Autor> vectorAutor = g.getAutors();
         Vector<Vector<String>> PA = new Vector<Vector<String>>();
         for (int i = 0; i < vectorAutor.size(); ++i) {
-            Vector<Entidad> vEnt = g.getRelacion(vectorAutor.get(i).getNombre(), "Autor");
+            Vector<Entidad> vEnt = g.getRelacion(vectorAutor.get(i).getId(), "Autor");
             for (int j = 0; j < vEnt.size(); ++j) {
                 Vector<String> vec = new Vector<String>();
                 vec.add(Integer.toString(vEnt.get(j).getId()));
@@ -156,7 +156,7 @@ public class ControladorGrafo {
         Vector<Conferencia> vectorConferencia = g.getConferencias();
         Vector<Vector<String>> PC = new Vector<Vector<String>>();
         for (int i = 0; i < vectorConferencia.size(); ++i) {
-            Vector<Entidad> vEnt = g.getRelacion(vectorConferencia.get(i).getNombre(), "Conferencia");
+            Vector<Entidad> vEnt = g.getRelacion(vectorConferencia.get(i).getId(), "Conferencia");
             for (int j = 0; j < vEnt.size(); ++j) {
                 Vector<String> vec = new Vector<String>();
                 vec.add(Integer.toString(vEnt.get(j).getId()));
@@ -171,7 +171,7 @@ public class ControladorGrafo {
         Vector<Termino> vectorTermino = g.getTerminos();
         Vector<Vector<String>> PT = new Vector<Vector<String>>();
         for (int i = 0; i < vectorTermino.size(); ++i) {
-            Vector<Entidad> vEnt = g.getRelacion(vectorTermino.get(i).getNombre(), "Termino");
+            Vector<Entidad> vEnt = g.getRelacion(vectorTermino.get(i).getId(), "Termino");
             for (int j = 0; j < vEnt.size(); ++j) {
                 Vector<String> vec = new Vector<String>();
                 vec.add(Integer.toString(vEnt.get(j).getId()));
