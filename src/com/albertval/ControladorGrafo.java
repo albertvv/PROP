@@ -68,20 +68,20 @@ public class ControladorGrafo {
     private void cargarRelaciones() throws IOException {
         Vector<Vector<String>> PA = cgp.getPA();
         for (int i = 0; i < PA.size(); ++i) {
-            String P = PA.get(i).get(0);
-            String A = PA.get(i).get(1);
+            Integer P = Integer.parseInt(PA.get(i).get(0));
+            Integer A = Integer.parseInt(PA.get(i).get(1));
             g.addRelacion(P, A, "PA");
         }
         Vector<Vector<String>> PC = cgp.getPC();
         for (int i = 0; i < PC.size(); ++i) {
-            String P = PC.get(i).get(0);
-            String C = PC.get(i).get(1);
+            Integer P = Integer.parseInt(PC.get(i).get(0));
+            Integer C = Integer.parseInt(PC.get(i).get(1));
             g.addRelacion(P, C, "PC");
         }
         Vector<Vector<String>> PT = cgp.getPT();
         for (int i = 0; i < PT.size(); ++i) {
-            String P = PT.get(i).get(0);
-            String T = PT.get(i).get(1);
+            Integer P = Integer.parseInt(PT.get(i).get(0));
+            Integer T = Integer.parseInt(PT.get(i).get(1));
             g.addRelacion(P, T, "PT");
         }
     }
